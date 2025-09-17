@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Spatie\LaravelIgnition\Facades\Flare;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Configure Ignition to show all frames
+        if (config('app.debug')) {
+            Flare::configureFlare(function ($flare) {
+                $flare->hideVendorFrames(false)
+                      ->setCollapseFramesByDefault(false);
+            });
+        }
+    }
+}
+

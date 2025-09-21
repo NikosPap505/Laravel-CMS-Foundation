@@ -23,12 +23,14 @@ class PageController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'slug'  => 'required|string|max:255|unique:pages',
+            'slug' =>'required|string|max:255|unique:pages',
+            'content' => 'nullable|string',
         ]);
 
-        Page::create($request->only('title', 'slug'));
+        // Only use 'title' since 'slug' column has been removed
+        Page::create($request->only('title', 'content', 'slug'));
 
-        return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
+         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
     }
 
     public function edit(Page $page)
@@ -38,13 +40,15 @@ class PageController extends Controller
 
     public function update(Request $request, Page $page)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'slug'  => 'required|string|max:255|unique:pages,slug,'.$page->id,
-        ]);
+         $request->validate([
+        'title' => 'required|string|max:255',
+        'slug'  => 'required|string|max:255|unique:pages,slug,'.$page->id,
+        'content' => 'nullable|string',
+    ]);
 
-        $page->update($request->only('title', 'slug'));
-
+        // Only update 'title' since 'slug' column has been removed
+        
+        $page->update($request->only('title','slug','content'));
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully!');
     }
 

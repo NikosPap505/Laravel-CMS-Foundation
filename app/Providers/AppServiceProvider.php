@@ -20,13 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Configure Ignition to show all frames
-        if (config('app.debug')) {
-            Flare::configureFlare(function ($flare) {
-                $flare->hideVendorFrames(false)
-                      ->setCollapseFramesByDefault(false);
-            });
-        }
+        
     }
 }
 

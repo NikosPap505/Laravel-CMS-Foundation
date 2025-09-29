@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\NewsletterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +57,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{category:slug}', [PostController::class, 'category'])->name('blog.category');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
-
+Route::post('/newsletter-subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 // Authentication routes (e.g., /login)
 require __DIR__.'/auth.php';
 

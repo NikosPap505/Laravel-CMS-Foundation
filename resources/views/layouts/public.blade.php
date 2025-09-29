@@ -52,10 +52,31 @@
     </main>
 
     <footer class="bg-surface text-text-secondary mt-12 border-t border-border">
-        <div class="container mx-auto px-4 py-6 text-center">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h3 class="text-lg font-semibold text-text-primary">Subscribe to our Newsletter</h3>
+                <p class="mt-2 text-sm">Get the latest news and articles to your inbox every month.</p>
+            </div>
+            <div>
+                @if (session('success'))
+                    <div class="text-success">{{ session('success') }}</div>
+                @endif
+                <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex items-center">
+                    @csrf
+                    <input type="email" name="email" placeholder="Enter your email" required class="w-full bg-background border-border rounded-l-md shadow-sm text-text-primary focus:ring-accent focus:border-accent">
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-r-md hover:bg-opacity-90">Subscribe</button>
+                </form>
+                @error('email')
+                    <p class="text-error text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+        <div class="mt-8 text-center border-t border-border pt-6">
             <p>&copy; {{ date('Y') }} MyCMS. All Rights Reserved.</p>
         </div>
-    </footer>
+    </div>
+</footer>
 
 </body>
 </html>

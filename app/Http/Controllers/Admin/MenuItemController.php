@@ -10,7 +10,7 @@ class MenuItemController extends Controller
 {
     public function index()
     {
-        $menuItems = MenuItem::orderBy('order', 'asc')->get();
+        $menuItems = MenuItem::orderBy('order', 'asc')->paginate(15);
         return view('admin.menu_items.index', compact('menuItems'));
     }
 
@@ -21,12 +21,12 @@ class MenuItemController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'link' => 'required|string|max:255',
             'order' => 'required|integer',
         ]);
-        MenuItem::create($request->all());
+        MenuItem::create($validated);
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item created successfully.');
     }
 
@@ -37,12 +37,12 @@ class MenuItemController extends Controller
 
     public function update(Request $request, MenuItem $menuItem)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'link' => 'required|string|max:255',
             'order' => 'required|integer',
         ]);
-        $menuItem->update($request->all());
+        $menuItem->update($validated);
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item updated successfully.');
     }
 
@@ -50,5 +50,20 @@ class MenuItemController extends Controller
     {
         $menuItem->delete();
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item deleted successfully.');
+    }
+
+    // ✅ ADD THIS ENTIRE METHOD
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'integer|exists:menu_items,id'
+        ]);
+
+        foreach ($request->order as $index => $itemId) {
+            MenuItem::where('id', $itemId)->update(['order' => $index + 1]);
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }

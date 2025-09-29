@@ -16,7 +16,10 @@ class Page extends Model
      */
     protected $fillable = [
         'title',
-        'slug',      // <-- Πρόσθεσε αυτό
-        'content',   // <-- Και αυτό
+        'slug',
+        'content',
+        'order', // <-- Πρόσθεσε αυτό
+        'meta_title',
+        'meta_description',
     ];
 }

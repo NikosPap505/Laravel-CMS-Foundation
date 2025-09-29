@@ -16,6 +16,8 @@ class Post extends Model
         'excerpt',
         'body',
         'featured_image',
+        'meta_title',
+        'meta_description',
     ];
 
     public function category()

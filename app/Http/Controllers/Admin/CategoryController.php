@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::latest()->paginate(15);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -21,12 +21,12 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:categories',
         ]);
 
-        Category::create($request->all());
+        Category::create($validated);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
@@ -38,12 +38,12 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
         ]);
 
-        $category->update($request->all());
+        $category->update($validated);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
     }

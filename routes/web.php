@@ -1,20 +1,63 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\PostController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Custom dashboard redirect
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('admin.pages.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Admin Routes
+Route::middleware(['auth', 'verified'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('pages', PageController::class);
+        Route::post('pages/reorder', [PageController::class, 'reorder'])->name('pages.reorder'); // ✅ ADD THIS
+        Route::resource('menu-items', MenuItemController::class);
+        Route::post('menu-items/reorder', [MenuItemController::class, 'reorder'])->name('menu-items.reorder'); // ✅ ADD THIS
+        Route::resource('categories', CategoryController::class);
+        Route::resource('posts', AdminPostController::class);
+        Route::resource('users', UserController::class)->middleware('role:admin');
+
+        // ✅ ADD THIS ROUTE
+        Route::post('upload-image', [ImageUploadController::class, 'store'])->name('images.upload');
+    });
+
+// Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// --- Public Routes ---
+
+// Public Blog Routes
+Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
+Route::get('/blog/category/{category:slug}', [PostController::class, 'category'])->name('blog.category');
+Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
+
+// Authentication routes (e.g., /login)
 require __DIR__.'/auth.php';
+
+// Public Page Route (must always be last)
+Route::get('/{page:slug}', [PublicPageController::class, 'show'])->name('page.show');

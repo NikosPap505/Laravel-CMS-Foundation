@@ -13,15 +13,20 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+        <!-- TinyMCE -->
+        <script src="https://cdn.tiny.cloud/1/f8n0l9nzwigjdcwl2jmcyxwlevc051jlfzuea95mm8wgk35v/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <body class="font-sans antialiased bg-background text-text-secondary">
+        <div class="min-h-screen">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-800 dark:text-gray-200">
                         {{ $header }}
                     </div>
                 </header>
@@ -29,8 +34,30 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
+
+        @stack('scripts')
+
+    <script>
+        // Check if both title and slug fields exist on the page
+        if (document.getElementById('title') && document.getElementById('slug')) {
+            const titleInput = document.getElementById('title');
+            const slugInput = document.getElementById('slug');
+
+            titleInput.addEventListener('keyup', function() {
+                // Convert the title to a URL-friendly slug
+                const slug = this.value.toString().toLowerCase()
+                    .replace(/\s+/g, '-')           // Replace spaces with -
+                    .replace(/[^¿-\u1FFF\u2C00-\uD7FF\w\-]+/g, '') // Remove all non-word chars except -
+                    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                    .replace(/^-+/, '')             // Trim - from start of text
+                    .replace(/-+$/, '');            // Trim - from end of text
+
+                slugInput.value = slug;
+            });
+        }
+    </script>
     </body>
 </html>

@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     public function index()
-    {
-        $pages = Page::latest()->paginate(10);
-        return view('admin.pages.index', compact('pages'));
-    }
+{
+    $pages = Page::orderBy('order', 'asc')->get();
+    return view('admin.pages.index', compact('pages'));
+}
 
     public function create()
     {
@@ -21,13 +21,13 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages',
             'content' => 'nullable|string',
         ]);
 
-        Page::create($request->all());
+        Page::create($validated);
 
         // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
@@ -40,13 +40,15 @@ class PageController extends Controller
 
     public function update(Request $request, Page $page)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:pages,slug,' . $page->id,
             'content' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
         ]);
 
-        $page->update($request->all());
+        $page->update($validated);
 
         // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully!');
@@ -58,5 +60,20 @@ class PageController extends Controller
 
         // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully!');
+    }
+
+    // ✅ ADD THIS ENTIRE METHOD
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'integer|exists:pages,id'
+        ]);
+
+        foreach ($request->order as $index => $pageId) {
+            Page::where('id', $pageId)->update(['order' => $index + 1]);
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }

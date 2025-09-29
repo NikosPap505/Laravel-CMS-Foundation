@@ -15,35 +15,28 @@ class DemoDataSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create an admin user
-        $admin = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
+        // Create 5 Categories
+        $categories = \App\Models\Category::factory(5)->create();
+
+        // Create 25 Posts, assigning a random category to each
+        \App\Models\Post::factory(25)->recycle($categories)->create();
+
+        // Create some standard pages
+        \App\Models\Page::factory()->create([
+            'title' => 'Home Page',
+            'slug' => 'home',
+            'content' => '<h1>Welcome to our Website</h1><p>This is the homepage content.</p>',
+            'order' => 1,
         ]);
-        $admin->assignRole('admin');
-
-        // Create a writer user
-        $writer = User::factory()->create([
-            'name' => 'Writer User',
-            'email' => 'writer@example.com',
-            'password' => Hash::make('password'),
+        \App\Models\Page::factory()->create([
+            'title' => 'About Us',
+            'slug' => 'about-us',
+            'order' => 2,
         ]);
-        $writer->assignRole('writer');
-
-        // Create some categories
-        $cat1 = Category::factory()->create(['name' => 'Laravel', 'slug' => 'laravel']);
-        $cat2 = Category::factory()->create(['name' => 'Tutorials', 'slug' => 'tutorials']);
-
-        // Create some posts
-        Post::factory()->create([
-            'category_id' => $cat1->id,
-            'title' => 'Welcome to Laravel',
-            'slug' => 'welcome-to-laravel',
-        ]);
-
-        Post::factory(5)->create([
-            'category_id' => $cat2->id,
+        \App\Models\Page::factory()->create([
+            'title' => 'Our Services',
+            'slug' => 'services',
+            'order' => 3,
         ]);
     }
 }

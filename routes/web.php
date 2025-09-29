@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Page; // Πρόσθεσε αυτό στην κορυφή μαζί με τα άλλα use
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\MenuItemController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\NewsletterController;
 
 /*
@@ -19,8 +21,16 @@ use App\Http\Controllers\NewsletterController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    // Βρες τη σελίδα με slug 'home' ή δείξε 404 αν δεν υπάρχει
+    try {
+        $homePage = Page::where('slug', 'home')->first();
+        // Χρησιμοποίησε το ίδιο view με τις άλλες σελίδες για να την εμφανίσεις
+        return view('home', ['page' => $homePage]);
+    } catch (\Exception $e) {
+        // Αν δεν υπάρχει σελίδα 'home', απλά δείξε το welcome view
+        return view('welcome');
+    }
+})->name('home');
 
 // Custom dashboard redirect
 Route::get('/dashboard', function () {
@@ -57,6 +67,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{category:slug}', [PostController::class, 'category'])->name('blog.category');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
+Route::get('/contact', [ContactFormController::class, 'create'])->name('contact.create');
+Route::post('/contact', [ContactFormController::class, 'store'])->name('contact.store');
+Route::get('/contact/thank-you', function () { 
+    return view('contact.thank-you');
+    })->name('contact.thank-you');
+
 Route::post('/newsletter-subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
 // Authentication routes (e.g., /login)
 require __DIR__.'/auth.php';

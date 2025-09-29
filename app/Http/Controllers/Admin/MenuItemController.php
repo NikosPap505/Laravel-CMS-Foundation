@@ -26,7 +26,13 @@ class MenuItemController extends Controller
             'link' => 'required|string|max:255',
             'order' => 'required|integer',
         ]);
+
+        // Handle checkboxes
+        $validated['show_in_header'] = $request->has('show_in_header');
+        $validated['show_in_footer'] = $request->has('show_in_footer');
+
         MenuItem::create($validated);
+
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item created successfully.');
     }
 
@@ -42,7 +48,13 @@ class MenuItemController extends Controller
             'link' => 'required|string|max:255',
             'order' => 'required|integer',
         ]);
+
+        // Handle checkboxes
+        $validated['show_in_header'] = $request->has('show_in_header');
+        $validated['show_in_footer'] = $request->has('show_in_footer');
+
         $menuItem->update($validated);
+
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item updated successfully.');
     }
 

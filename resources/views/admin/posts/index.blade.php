@@ -14,6 +14,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Status</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -22,6 +23,15 @@
                         <tr>
                             <td class="px-6 py-4 text-sm text-text-primary">{{ $post->title }}</td>
                             <td class="px-6 py-4 text-sm text-text-secondary">{{ $post->category->name }}</td>
+                            <td class="px-6 py-4 text-sm text-text-secondary">
+                                @if($post->status == 'published')
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-success/20 text-success">Published</span>
+                                @elseif($post->status == 'scheduled')
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning/20 text-warning">Scheduled</span>
+                                @else
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-500/20 text-gray-400">Draft</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-right text-sm font-medium">
                                 <a href="{{ route('admin.posts.edit', $post) }}" class="link-edit">Edit</a>
                                 <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" class="inline-block ml-4" onsubmit="return confirm('Are you sure?');">

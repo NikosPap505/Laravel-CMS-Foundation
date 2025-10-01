@@ -29,7 +29,7 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main>
         @yield('content')
     </main>
 
@@ -38,7 +38,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="md:col-span-1">
                     <h3 class="text-xl font-bold text-accent mb-4">MyCMS</h3>
-                    <p class="text-sm">Ένα μοντέρνο CMS χτισμένο με Laravel για να δώσει ζωή στις ιδέες σας. Ευέλικτο, γρήγορο και πανίσχυρο.</p>
+                    <p class="text-sm">{{ setting('footer_about_text', 'A modern CMS built with Laravel to bring your ideas to life. Flexible, fast, and powerful.') }}</p>
                 </div>
 
                 <div>
@@ -72,7 +72,8 @@
                 </div>
             </div>
             <div class="mt-12 text-center border-t border-border pt-6">
-                <p class="text-sm">&copy; {{ date('Y') }} MyCMS. All Rights Reserved.</p>
+                 <p class="text-sm">{{ setting('copyright_text', '&copy; ' . date('Y') . ' MyCMS. All Rights Reserved.') }}</p>
+            </div>
             </div>
         </div>
     </footer>

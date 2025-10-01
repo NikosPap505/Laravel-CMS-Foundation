@@ -2,13 +2,12 @@
 @section('content')
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold text-text-primary">Menu Items</h1>
-            <a href="{{ route('admin.menu-items.create') }}" class="btn-primary">Add Menu Item</a>
-        </div>
-
         <div class="bg-surface overflow-hidden shadow-lg sm:rounded-lg border border-border">
             <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-semibold text-text-primary">Menu Items</h1>
+                    <a href="{{ route('admin.menu-items.create') }}" class="btn-primary">Add Menu Item</a>
+                </div>
                 <table class="min-w-full divide-y divide-border">
                     <thead>
                         <tr>
@@ -19,6 +18,7 @@
                         </tr>
                     </thead>
                     <tbody id="sortable-menu">
+                        {{-- THE FIX IS HERE: Changed $posts to $menuItems --}}
                         @foreach ($menuItems as $item)
                         <tr data-id="{{ $item->id }}">
                             <td class="px-6 py-4 cursor-grab text-center drag-handle">
@@ -47,21 +47,23 @@
 @push('scripts')
 <script>
     const sortableMenu = document.getElementById('sortable-menu');
-    new Sortable(sortableMenu, {
-        animation: 150,
-        handle: '.drag-handle',
-        onEnd: function (evt) {
-            const newOrder = Array.from(evt.to.children).map(row => row.getAttribute('data-id'));
-            fetch('{{ route("admin.menu-items.reorder") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ order: newOrder })
-            });
-        }
-    });
+    if (sortableMenu) {
+        new Sortable(sortableMenu, {
+            animation: 150,
+            handle: '.drag-handle',
+            onEnd: function (evt) {
+                const newOrder = Array.from(evt.to.children).map(row => row.getAttribute('data-id'));
+                fetch('{{ route("admin.menu-items.reorder") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ order: newOrder })
+                });
+            }
+        });
+    }
 </script>
 @endpush
 @endsection

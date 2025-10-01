@@ -10,20 +10,27 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('category')->latest()->paginate(10);
+        // CHANGE IS HERE: We added ->published() to only get published posts
+        $posts = Post::published()->latest('published_at')->paginate(9);
 
         return view('blog.index', compact('posts'));
     }
 
-    public function show(Post $post)
-    {
-        return view('blog.show', compact('post'));
-    }
-
     public function category(Category $category)
     {
-        $posts = $category->posts()->latest()->paginate(10);
+        // CHANGE IS HERE: We added ->published() here as well
+        $posts = $category->posts()->published()->latest('published_at')->paginate(10);
 
-        return view('blog.index', compact('posts', 'category'));
+        return view('blog.category', compact('posts', 'category'));
+    }
+
+    public function show(Post $post)
+    {
+        // Optional: You might want to prevent direct access to non-published posts
+        if ($post->status !== 'published' || $post->published_at->isFuture()) {
+            abort(404);
+        }
+
+        return view('blog.show', compact('post'));
     }
 }

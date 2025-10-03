@@ -51,8 +51,40 @@
             </div>
             <div>
                 <label for="featured_image" class="block text-sm font-medium text-text-secondary">Featured Image</label>
-                <input type="file" name="featured_image" id="featured_image" class="mt-1 block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-opacity-90">
+                <div class="mt-1 flex items-center">
+                    <input type="text" name="featured_image_url" id="featured_image_url" class="flex-1 block w-full bg-background border-border rounded-md shadow-sm text-text-primary focus:ring-accent focus:border-accent" readonly>
+                    <button type="button" id="browse-media" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md">Browse</button>
+                </div>
+                <input type="hidden" name="featured_image" id="featured_image">
             </div>
+        </div>
+    </div>
+
+    <div id="media-modal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Media Library
+                            </h3>
+                            <div id="media-grid" class="mt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                <!-- Media items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="close-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
         </div>
     </div>
 
@@ -127,6 +159,54 @@
                 .replace(/-+$/, '');
             
             slugInput.value = slug;
+        });
+    }
+
+    // Media Library Modal
+    const browseButton = document.getElementById('browse-media');
+    const closeModalButton = document.getElementById('close-modal');
+    const modal = document.getElementById('media-modal');
+    const mediaGrid = document.getElementById('media-grid');
+    const featuredImageUrl = document.getElementById('featured_image_url');
+    const featuredImageInput = document.getElementById('featured_image');
+
+    if (browseButton) {
+        browseButton.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            fetch('{{ route("admin.api.media.index") }}', {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+                .then(response => response.json())
+                .then(media => {
+                    mediaGrid.innerHTML = '';
+                    media.forEach(item => {
+                        const div = document.createElement('div');
+                        div.classList.add('cursor-pointer', 'border', 'rounded-lg', 'overflow-hidden');
+                        div.dataset.id = item.id;
+                        div.dataset.url = item.url;
+                        div.innerHTML = `<img src="${item.url}" alt="${item.alt_text}" class="w-full h-32 object-cover">`;
+                        mediaGrid.appendChild(div);
+                    });
+                });
+        });
+    }
+
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+    }
+
+    if (mediaGrid) {
+        mediaGrid.addEventListener('click', (e) => {
+            if (e.target.closest('div[data-id]')) {
+                const selected = e.target.closest('div[data-id]');
+                featuredImageUrl.value = selected.dataset.url;
+                featuredImageInput.value = selected.dataset.id;
+                modal.classList.add('hidden');
+            }
         });
     }
 </script>

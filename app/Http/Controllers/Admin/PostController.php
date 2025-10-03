@@ -30,20 +30,23 @@ class PostController extends Controller
         'category_id' => 'required|exists:categories,id',
         'excerpt' => 'required|string',
         'body' => 'required|string',
-        'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'featured_image' => 'nullable|exists:media,id',
         'status' => 'required|in:draft,published,scheduled',
         'published_at' => 'nullable|date',
         'meta_title' => 'nullable|string|max:255',
         'meta_description' => 'nullable|string',
     ]);
 
-    if ($request->hasFile('featured_image')) {
-        $validated['featured_image'] = $request->file('featured_image')->store('posts', 'public');
+    if ($request->filled('featured_image')) {
+        $media = \App\Models\Media::find($request->input('featured_image'));
+        $validated['featured_image'] = $media->path;
     }
 
     if ($validated['status'] === 'published' && empty($validated['published_at'])) {
         $validated['published_at'] = now();
     }
+
+    $validated['body'] = clean($validated['body']);
 
     Post::create($validated);
     return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
@@ -63,16 +66,18 @@ public function update(Request $request, Post $post)
         'category_id' => 'required|exists:categories,id',
         'excerpt' => 'required|string',
         'body' => 'required|string',
-        'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'featured_image' => 'nullable|exists:media,id',
         'status' => 'required|in:draft,published,scheduled',
         'published_at' => 'nullable|date',
         'meta_title' => 'nullable|string|max:255',
         'meta_description' => 'nullable|string',
     ]);
 
-    if ($request->hasFile('featured_image')) {
-        if ($post->featured_image) { \Illuminate\Support\Facades\Storage::disk('public')->delete($post->featured_image); }
-        $validated['featured_image'] = $request->file('featured_image')->store('posts', 'public');
+    if ($request->filled('featured_image')) {
+        $media = \App\Models\Media::find($request->input('featured_image'));
+        $validated['featured_image'] = $media->path;
+    } else {
+        $validated['featured_image'] = null;
     }
 
     if ($validated['status'] === 'published' && empty($validated['published_at'])) {
@@ -82,6 +87,8 @@ public function update(Request $request, Post $post)
     if ($validated['status'] === 'draft') {
         $validated['published_at'] = null;
     }
+
+    $validated['body'] = clean($validated['body']);
 
     $post->update($validated);
     return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');

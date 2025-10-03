@@ -9,6 +9,13 @@
             <p class="text-lg text-text-secondary">Stay up to date with the latest news and insights from our team.</p>
         </div>
 
+        <div class="mt-8 max-w-lg mx-auto">
+            <form action="{{ route('blog.index') }}" method="GET" class="flex">
+                <input type="text" name="search" placeholder="Search for posts..." class="w-full px-4 py-2 rounded-l-md border border-border focus:outline-none focus:ring-2 focus:ring-accent bg-surface text-text-primary" value="{{ request('search') }}">
+                <button type="submit" class="px-4 py-2 bg-accent text-white rounded-r-md hover:bg-opacity-80">Search</button>
+            </form>
+        </div>
+
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse ($posts as $post)
                 <article class="bg-surface rounded-lg shadow-lg overflow-hidden flex flex-col border border-border 
@@ -34,7 +41,11 @@
                 </article>
             @empty
                 <div class="bg-surface rounded-lg shadow-md p-6 md:col-span-2 lg:col-span-3">
-                    <p class="text-center text-text-secondary">No posts found.</p>
+                    @if (request('search'))
+                        <p class="text-center text-text-secondary">No results found for "<strong class="text-text-primary">{{ request('search') }}</strong>".</p>
+                    @else
+                        <p class="text-center text-text-secondary">No posts found.</p>
+                    @endif
                 </div>
             @endforelse
         </div>

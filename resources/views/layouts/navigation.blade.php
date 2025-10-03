@@ -15,6 +15,7 @@
                             'admin.menu-items.index' => 'Menus',
                             'admin.categories.index' => 'Categories',
                             'admin.posts.index' => 'Posts',
+                            'admin.media.index' => 'Media',
                         ];
                         $adminLinks = [
                             'admin.users.index' => 'Users',

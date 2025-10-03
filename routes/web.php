@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ContactFormController;
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'verified'])
 
         Route::resource('categories', CategoryController::class);
         Route::resource('posts', AdminPostController::class);
+        Route::resource('media', MediaController::class);
         
         Route::post('upload-image', [ImageUploadController::class, 'store'])->name('images.upload');
         
@@ -52,6 +54,9 @@ Route::middleware(['auth', 'verified'])
         
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('role:admin');
         Route::post('settings', [SettingController::class, 'store'])->name('settings.store')->middleware('role:admin');
+
+        // API routes
+        Route::get('/api/media', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])->name('api.media.index');
     });
 
 // Profile routes

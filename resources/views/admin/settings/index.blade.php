@@ -3,12 +3,12 @@
 @section('content')
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <h1 class="text-2xl font-semibold text-text-primary mb-6">
+            Site Settings
+        </h1>
+
         <div class="bg-surface overflow-hidden shadow-lg sm:rounded-lg border border-border">
             <div class="p-6 md:p-8">
-                <h1 class="text-2xl font-semibold text-text-primary mb-6 border-b border-border pb-4">
-                    Site Settings
-                </h1>
-
                 @if (session('success'))
                     <div class="bg-success/20 text-success p-3 rounded-md mb-6 text-sm">
                         {{ session('success') }}

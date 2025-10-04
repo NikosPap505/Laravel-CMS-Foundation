@@ -2,12 +2,13 @@
 @section('content')
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-text-primary">Menu Items</h1>
+            <a href="{{ route('admin.menu-items.create') }}" class="btn-primary">Add Menu Item</a>
+        </div>
+
         <div class="bg-surface overflow-hidden shadow-lg sm:rounded-lg border border-border">
             <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-semibold text-text-primary">Menu Items</h1>
-                    <a href="{{ route('admin.menu-items.create') }}" class="btn-primary">Add Menu Item</a>
-                </div>
                 <table class="min-w-full divide-y divide-border">
                     <thead>
                         <tr>

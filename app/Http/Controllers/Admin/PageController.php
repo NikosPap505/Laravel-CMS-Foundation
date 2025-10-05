@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePageRequest;
+use App\Http\Requests\UpdatePageRequest;
 use App\Models\Page;
 use Illuminate\Http\Request;
 
@@ -19,17 +21,14 @@ class PageController extends Controller
         return view('admin.pages.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePageRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages',
-            'content' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         Page::create($validated);
+        
+        // Clear cache when new page is created
+        clear_cms_cache();
 
-        // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully!');
     }
 
@@ -38,31 +37,27 @@ class PageController extends Controller
         return view('admin.pages.edit', compact('page'));
     }
 
-    public function update(Request $request, Page $page)
+    public function update(UpdatePageRequest $request, Page $page)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug,' . $page->id,
-            'content' => 'nullable|string',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         $page->update($validated);
+        
+        // Clear cache when page is updated
+        clear_cms_cache();
 
-        // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully!');
     }
 
     public function destroy(Page $page)
     {
         $page->delete();
+        
+        // Clear cache when page is deleted
+        clear_cms_cache();
 
-        // ΔΙΟΡΘΩΣΗ ΕΔΩ: Προστέθηκε το 'admin.'
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully!');
     }
 
-    // ✅ ADD THIS ENTIRE METHOD
     public function reorder(Request $request)
     {
         $request->validate([
@@ -73,6 +68,9 @@ class PageController extends Controller
         foreach ($request->order as $index => $pageId) {
             Page::where('id', $pageId)->update(['order' => $index + 1]);
         }
+        
+        // Clear cache when pages are reordered
+        clear_cms_cache();
 
         return response()->json(['status' => 'success']);
     }

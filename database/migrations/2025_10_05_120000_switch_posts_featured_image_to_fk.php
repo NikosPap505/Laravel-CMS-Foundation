@@ -9,7 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->foreignId('featured_image_id')->nullable()->after('slug')->constrained('media')->nullOnDelete();
+            // Add foreign key constraint to existing featured_image_id column
+            $table->foreign('featured_image_id')->references('id')->on('media')->nullOnDelete();
         });
 
         // Drop legacy column if it exists
@@ -24,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('posts', function (Blueprint $table) {
             $table->string('featured_image')->nullable();
-            $table->dropConstrainedForeignId('featured_image_id');
+            $table->dropForeign(['featured_image_id']);
         });
     }
 };

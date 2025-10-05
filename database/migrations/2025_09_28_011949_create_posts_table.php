@@ -18,7 +18,7 @@ return new class extends Migration
         $table->string('slug')->unique();
         $table->text('excerpt');
         $table->longText('body');
-        $table->foreignId('featured_image_id')->nullable()->constrained('media')->nullOnDelete();
+        $table->unsignedBigInteger('featured_image_id')->nullable();
         $table->timestamps();
     });
 }

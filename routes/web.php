@@ -48,7 +48,7 @@ Route::middleware(['auth', 'verified'])
         Route::resource('posts', AdminPostController::class);
         Route::resource('media', MediaController::class);
         
-        Route::post('upload-image', [ImageUploadController::class, 'store'])->name('images.upload');
+        Route::post('upload-image', [ImageUploadController::class, 'store'])->name('images.upload')->middleware('throttle.uploads');
         
         Route::resource('users', UserController::class)->middleware('role:admin');
         
@@ -87,11 +87,11 @@ Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.sho
 
 // Contact Form Routes
 Route::get('/contact', [ContactFormController::class, 'create'])->name('contact.create');
-Route::post('/contact', [ContactFormController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactFormController::class, 'store'])->name('contact.store')->middleware('throttle.forms');
 Route::get('/contact/thank-you', function () {
     return view('contact.thank-you');
 })->name('contact.thank-you');
-Route::post('/newsletter-subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
+Route::post('/newsletter-subscribe', [NewsletterController::class, 'store'])->name('newsletter.subscribe')->middleware('throttle.forms');
 
 
 // Authentication routes (e.g., /login)

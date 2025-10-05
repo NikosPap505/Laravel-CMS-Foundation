@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -22,30 +23,18 @@ class PostController extends Controller
         return view('admin.posts.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'slug' => 'required|string|max:255|unique:posts',
-        'category_id' => 'required|exists:categories,id',
-        'excerpt' => 'required|string',
-        'body' => 'required|string',
-        'featured_image_id' => 'nullable|exists:media,id',
-        'status' => 'required|in:draft,published,scheduled',
-        'published_at' => 'nullable|date',
-        'meta_title' => 'nullable|string|max:255',
-        'meta_description' => 'nullable|string',
-    ]);
+        $validated = $request->validated();
+        $validated['body'] = clean($validated['body']);
 
-    if ($validated['status'] === 'published' && empty($validated['published_at'])) {
-        $validated['published_at'] = now();
+        Post::create($validated);
+        
+        // Clear cache when new post is created
+        clear_cms_cache();
+        
+        return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
     }
-
-    $validated['body'] = clean($validated['body']);
-
-    Post::create($validated);
-    return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
-}
 
     public function edit(Post $post)
     {
@@ -53,38 +42,25 @@ class PostController extends Controller
         return view('admin.posts.edit', compact('post', 'categories'));
     }
 
-public function update(Request $request, Post $post)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'slug' => 'required|string|max:255|unique:posts,slug,' . $post->id,
-        'category_id' => 'required|exists:categories,id',
-        'excerpt' => 'required|string',
-        'body' => 'required|string',
-        'featured_image_id' => 'nullable|exists:media,id',
-        'status' => 'required|in:draft,published,scheduled',
-        'published_at' => 'nullable|date',
-        'meta_title' => 'nullable|string|max:255',
-        'meta_description' => 'nullable|string',
-    ]);
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        $validated = $request->validated();
+        $validated['body'] = clean($validated['body']);
 
-    if ($validated['status'] === 'published' && empty($validated['published_at'])) {
-        $validated['published_at'] = now();
+        $post->update($validated);
+        
+        // Clear cache when post is updated
+        clear_cms_cache();
+        
+        return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
     }
-    
-    if ($validated['status'] === 'draft') {
-        $validated['published_at'] = null;
-    }
-
-    $validated['body'] = clean($validated['body']);
-
-    $post->update($validated);
-    return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
-}
 
     public function destroy(Post $post)
     {
         $post->delete();
+        
+        // Clear cache when post is deleted
+        clear_cms_cache();
 
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');
     }

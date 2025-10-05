@@ -23,10 +23,30 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:10240', // 10MB Max
+            'file' => [
+                'required',
+                'file',
+                'max:10240', // 10MB Max
+                'mimes:jpg,jpeg,png,gif,pdf,doc,docx,txt,mp4,mp3',
+                'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,video/mp4,audio/mpeg'
+            ],
         ]);
 
         $file = $request->file('file');
+        
+        // Additional security checks
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt', 'mp4', 'mp3'];
+        $extension = strtolower($file->getClientOriginalExtension());
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            return redirect()->back()->withErrors(['file' => 'File type not allowed.']);
+        }
+
+        // Check file size
+        if ($file->getSize() > 10 * 1024 * 1024) { // 10MB
+            return redirect()->back()->withErrors(['file' => 'File size too large. Maximum 10MB allowed.']);
+        }
+
         $path = $file->store('media', 'public');
 
         Media::create([

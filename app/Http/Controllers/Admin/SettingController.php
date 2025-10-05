@@ -24,7 +24,8 @@ class SettingController extends Controller
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
-        Cache::forget('settings');
+        // Clear all CMS cache when settings are updated
+        clear_cms_cache();
 
         return redirect()->back()->with('success', 'Settings saved successfully!');
     }

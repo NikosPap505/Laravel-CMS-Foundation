@@ -23,24 +23,19 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-{
+    {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'slug' => 'required|string|max:255|unique:posts',
         'category_id' => 'required|exists:categories,id',
         'excerpt' => 'required|string',
         'body' => 'required|string',
-        'featured_image' => 'nullable|exists:media,id',
+        'featured_image_id' => 'nullable|exists:media,id',
         'status' => 'required|in:draft,published,scheduled',
         'published_at' => 'nullable|date',
         'meta_title' => 'nullable|string|max:255',
         'meta_description' => 'nullable|string',
     ]);
-
-    if ($request->filled('featured_image')) {
-        $media = \App\Models\Media::find($request->input('featured_image'));
-        $validated['featured_image'] = $media->path;
-    }
 
     if ($validated['status'] === 'published' && empty($validated['published_at'])) {
         $validated['published_at'] = now();
@@ -66,19 +61,12 @@ public function update(Request $request, Post $post)
         'category_id' => 'required|exists:categories,id',
         'excerpt' => 'required|string',
         'body' => 'required|string',
-        'featured_image' => 'nullable|exists:media,id',
+        'featured_image_id' => 'nullable|exists:media,id',
         'status' => 'required|in:draft,published,scheduled',
         'published_at' => 'nullable|date',
         'meta_title' => 'nullable|string|max:255',
         'meta_description' => 'nullable|string',
     ]);
-
-    if ($request->filled('featured_image')) {
-        $media = \App\Models\Media::find($request->input('featured_image'));
-        $validated['featured_image'] = $media->path;
-    } else {
-        $validated['featured_image'] = null;
-    }
 
     if ($validated['status'] === 'published' && empty($validated['published_at'])) {
         $validated['published_at'] = now();
@@ -96,11 +84,6 @@ public function update(Request $request, Post $post)
 
     public function destroy(Post $post)
     {
-        // Delete the featured image from storage
-        if ($post->featured_image) {
-            Storage::disk('public')->delete($post->featured_image);
-        }
-
         $post->delete();
 
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');

@@ -4,8 +4,8 @@
 
 @section('content')
     <article class="max-w-4xl mx-auto">
-        @if ($post->featured_image)
-            <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="w-full h-auto rounded-lg shadow-lg mb-8">
+        @if ($post->featuredImage)
+            <img src="{{ Storage::url($post->featuredImage->path) }}" alt="{{ $post->featuredImage->alt_text ?? $post->title }}" class="w-full h-auto rounded-lg shadow-lg mb-8">
         @endif
         
         <div class="text-center mb-4">

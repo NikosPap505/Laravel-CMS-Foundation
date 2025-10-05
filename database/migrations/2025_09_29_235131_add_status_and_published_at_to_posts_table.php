@@ -12,7 +12,7 @@ return new class extends Migration
    public function up(): void
 {
     Schema::table('posts', function (Blueprint $table) {
-        $table->string('status')->default('draft')->after('featured_image');
+        $table->string('status')->default('draft')->after('featured_image_id');
         $table->timestamp('published_at')->nullable()->after('status');
     });
 }

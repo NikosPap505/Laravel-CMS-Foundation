@@ -20,10 +20,10 @@
             @forelse ($posts as $post)
                 <article class="bg-surface rounded-lg shadow-lg overflow-hidden flex flex-col border border-border 
                                 transform transition-all duration-300 hover:shadow-2xl hover:border-accent">
-                    @if($post->featured_image)
+                    @if($post->featuredImage)
                         <a href="{{ route('blog.show', $post) }}">
                             {{-- THE FIX IS IN THIS LINE --}}
-                            <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="w-full h-48 object-cover">
+                            <img src="{{ Storage::url($post->featuredImage->path) }}" alt="{{ $post->featuredImage->alt_text ?? $post->title }}" class="w-full h-48 object-cover">
                         </a>
                     @endif
                     <div class="p-6 flex flex-col flex-grow">

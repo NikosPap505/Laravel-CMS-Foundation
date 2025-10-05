@@ -7,9 +7,9 @@
 
     @forelse ($posts as $post)
         <article style="margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
-            @if($post->featured_image)
+            @if($post->featuredImage)
                 <a href="{{ route('blog.show', $post) }}">
-                    <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" style="width:100%; height:auto; margin-bottom: 15px;">
+                    <img src="{{ Storage::url($post->featuredImage->path) }}" alt="{{ $post->featuredImage->alt_text ?? $post->title }}" style="width:100%; height:auto; margin-bottom: 15px;">
                 </a>
             @endif
             <h2>

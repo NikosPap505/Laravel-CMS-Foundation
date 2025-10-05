@@ -23,7 +23,7 @@ class PostFactory extends Factory
             'slug' => \Illuminate\Support\Str::slug($title),
             'excerpt' => $this->faker->paragraph(2),
             'body' => '<p>' . implode('</p><p>', $this->faker->paragraphs(10)) . '</p>',
-            'featured_image' => 'posts/placeholder.jpg', // Θα χρησιμοποιούμε μια εικόνα placeholder
+            'featured_image_id' => null,
         ];
     }
 }

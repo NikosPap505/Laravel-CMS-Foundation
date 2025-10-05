@@ -42,13 +42,14 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="featured_image" class="block text-sm font-medium text-gray-700">Featured Image</label>
-                        <input type="file" name="featured_image" id="featured_image" class="mt-1 block w-full">
-                        @if($post->featured_image)
+                        <label class="block text-sm font-medium text-gray-700">Featured Image</label>
+                        @if($post->featuredImage)
                             <div class="mt-2">
-                                <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="w-32 h-auto">
+                                <img src="{{ Storage::url($post->featuredImage->path) }}" alt="{{ $post->featuredImage->alt_text ?? $post->title }}" class="w-32 h-auto">
                             </div>
                         @endif
+                        {{-- This form uses the admin media picker elsewhere; keep id field optional --}}
+                        <input type="hidden" name="featured_image_id" value="{{ old('featured_image_id', optional($post->featuredImage)->id) }}">
                     </div>
                     <div class="mb-4">
                         <label for="excerpt" class="block text-sm font-medium text-gray-700">Excerpt</label>

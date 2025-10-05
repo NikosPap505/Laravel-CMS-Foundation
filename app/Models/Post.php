@@ -16,7 +16,7 @@ class Post extends Model
         'slug',
         'excerpt',
         'body',
-        'featured_image',
+        'featured_image_id',
         'status',
         'published_at',
         'meta_title',
@@ -39,5 +39,10 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function featuredImage()
+    {
+        return $this->belongsTo(Media::class, 'featured_image_id');
     }
 }

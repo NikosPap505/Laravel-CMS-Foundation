@@ -41,8 +41,8 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="featured_image" class="block text-sm font-medium text-gray-700">Featured Image</label>
-                        <input type="file" name="featured_image" id="featured_image" class="mt-1 block w-full">
+                        <label class="block text-sm font-medium text-gray-700">Featured Image</label>
+                        <input type="hidden" name="featured_image_id" value="{{ old('featured_image_id') }}">
                     </div>
                     <div class="mb-4">
                         <label for="excerpt" class="block text-sm font-medium text-gray-700">Excerpt</label>

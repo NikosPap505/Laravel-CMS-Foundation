@@ -50,12 +50,12 @@
                 </select>
             </div>
             <div>
-                <label for="featured_image" class="block text-sm font-medium text-text-secondary">Featured Image</label>
+                <label for="featured_image_id" class="block text-sm font-medium text-text-secondary">Featured Image</label>
                 <div class="mt-1 flex items-center">
                     <input type="text" name="featured_image_url" id="featured_image_url" class="flex-1 block w-full bg-background border-border rounded-md shadow-sm text-text-primary focus:ring-accent focus:border-accent" readonly>
                     <button type="button" id="browse-media" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md">Browse</button>
                 </div>
-                <input type="hidden" name="featured_image" id="featured_image">
+                <input type="hidden" name="featured_image_id" id="featured_image_id">
             </div>
         </div>
     </div>
@@ -168,7 +168,7 @@
     const modal = document.getElementById('media-modal');
     const mediaGrid = document.getElementById('media-grid');
     const featuredImageUrl = document.getElementById('featured_image_url');
-    const featuredImageInput = document.getElementById('featured_image');
+    const featuredImageInput = document.getElementById('featured_image_id');
 
     if (browseButton) {
         browseButton.addEventListener('click', () => {

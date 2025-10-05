@@ -23,7 +23,7 @@ A robust, feature-rich Content Management System built with Laravel 12, featurin
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone (https://github.com/NikosPap505/Laravel-CMS-Foundation.git)
    cd Laravel-CMS-Foundation
    ```
 

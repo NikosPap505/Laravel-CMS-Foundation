@@ -10,12 +10,33 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with('category', 'featuredImage')->published()->latest('published_at');
+        $query = Post::with('category', 'featuredImage')->published();
 
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             // Use full-text search for better performance
             $query->whereFullText(['title', 'excerpt', 'body'], $searchTerm);
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Sort functionality
+        switch ($request->get('sort', 'latest')) {
+            case 'popular':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('published_at', 'asc');
+                break;
+            case 'latest':
+            default:
+                $query->latest('published_at');
+                break;
         }
 
         $posts = $query->paginate(9)->withQueryString();

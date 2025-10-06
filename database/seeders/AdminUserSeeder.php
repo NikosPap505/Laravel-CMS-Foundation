@@ -30,10 +30,10 @@ class AdminUserSeeder extends Seeder
         $adminPassword = config('app.admin_password');
         
         if (!$adminEmail || !$adminPassword) {
-            $this->error('ADMIN_EMAIL and ADMIN_PASSWORD must be set in your .env file!');
-            $this->error('Add these lines to your .env file:');
-            $this->error('ADMIN_EMAIL=your-admin@yourdomain.com');
-            $this->error('ADMIN_PASSWORD=your-secure-password');
+            $this->command->error('ADMIN_EMAIL and ADMIN_PASSWORD must be set in your .env file!');
+            $this->command->error('Add these lines to your .env file:');
+            $this->command->error('ADMIN_EMAIL=your-admin@yourdomain.com');
+            $this->command->error('ADMIN_PASSWORD=your-secure-password');
             return;
         }
         

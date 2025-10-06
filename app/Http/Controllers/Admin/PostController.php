@@ -76,4 +76,45 @@ class PostController extends Controller
 
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');
     }
+
+    public function bulkAction(\Illuminate\Http\Request $request)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:publish,draft,delete',
+            'ids' => 'required|array',
+            'ids.*' => 'exists:posts,id'
+        ]);
+
+        $action = $validated['action'];
+        $ids = $validated['ids'];
+        $count = count($ids);
+
+        switch ($action) {
+            case 'publish':
+                Post::whereIn('id', $ids)->update([
+                    'status' => 'published',
+                    'published_at' => now()
+                ]);
+                $message = "{$count} post(s) published successfully";
+                break;
+
+            case 'draft':
+                Post::whereIn('id', $ids)->update(['status' => 'draft']);
+                $message = "{$count} post(s) set as draft";
+                break;
+
+            case 'delete':
+                Post::whereIn('id', $ids)->delete();
+                $message = "{$count} post(s) deleted successfully";
+                break;
+        }
+
+        // Clear cache
+        clear_cms_cache();
+
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
+    }
 }

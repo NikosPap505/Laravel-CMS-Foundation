@@ -73,6 +73,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         @yield('content')
     </main>
 
+    {{-- Flash Messages --}}
+    <x-flash-messages />
+
     <footer class="bg-surface text-text-secondary mt-12 border-t border-border">
         <div class="container mx-auto px-4 py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -120,6 +123,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     {{-- Admin Quick Actions Toolbar --}}
     @include('components.admin-toolbar')
+    
+    {{-- Stack for additional styles and scripts --}}
+    @stack('styles')
+    @stack('scripts')
     
     </body>
 </html>

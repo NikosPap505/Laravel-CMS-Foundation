@@ -1,9 +1,36 @@
-{{-- Comment Section Component --}}
+{{-- Comment Section Component - Collapsible --}}
 <div class="mt-16 max-w-4xl mx-auto">
-    <div class="bg-surface rounded-lg border border-border p-6">
-        <h2 class="text-2xl font-bold text-text-primary mb-6">
-            Comments ({{ $comments->count() }})
-        </h2>
+    <div class="bg-surface rounded-lg border border-border overflow-hidden">
+        {{-- Comment Header (Always Visible) --}}
+        <div class="p-6 border-b border-border">
+            <button 
+                id="comments-toggle" 
+                class="flex items-center justify-between w-full text-left group"
+                onclick="toggleComments()"
+            >
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <h2 class="text-xl font-bold text-text-primary group-hover:text-accent transition-colors">
+                        Comments ({{ $comments->count() }})
+                    </h2>
+                </div>
+                <svg 
+                    id="comments-arrow" 
+                    class="w-5 h-5 text-text-secondary group-hover:text-accent transition-all duration-200 transform" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Comment Content (Collapsible) --}}
+        <div id="comments-content" class="hidden">
+            <div class="p-6">
 
         {{-- Comment Form --}}
         <div class="mb-8">
@@ -75,20 +102,36 @@
             </form>
         </div>
 
-        {{-- Comments List --}}
-        <div id="comments-list" class="space-y-6">
-            @forelse($comments as $comment)
-                @include('components.comment-item', ['comment' => $comment, 'level' => 0])
-            @empty
-                <div class="text-center py-8">
-                    <p class="text-text-secondary">No comments yet. Be the first to share your thoughts!</p>
+                {{-- Comments List --}}
+                <div id="comments-list" class="space-y-6">
+                    @forelse($comments as $comment)
+                        @include('components.comment-item', ['comment' => $comment, 'level' => 0])
+                    @empty
+                        <div class="text-center py-8">
+                            <p class="text-text-secondary">No comments yet. Be the first to share your thoughts!</p>
+                        </div>
+                    @endforelse
                 </div>
-            @endforelse
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+// Toggle comments visibility
+window.toggleComments = function() {
+    const content = document.getElementById('comments-content');
+    const arrow = document.getElementById('comments-arrow');
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        content.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const commentForm = document.getElementById('comment-form');
     const commentsList = document.getElementById('comments-list');
@@ -125,18 +168,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Clear form
                     this.reset();
                     
-                    // Show success message
-                    showNotification(data.message, 'success');
+                    // Show success message using toast system
+                    if (window.toast) {
+                        window.toast.success(data.message);
+                    } else {
+                        showNotification(data.message, 'success');
+                    }
+                    
+                    // Auto-expand comments section to show new comment
+                    const content = document.getElementById('comments-content');
+                    if (content.classList.contains('hidden')) {
+                        toggleComments();
+                    }
                     
                     // Reload comments
                     loadComments();
                 } else {
-                    showNotification(data.message || 'Error posting comment.', 'error');
+                    if (window.toast) {
+                        window.toast.error(data.message || 'Error posting comment.');
+                    } else {
+                        showNotification(data.message || 'Error posting comment.', 'error');
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('Error posting comment. Please try again.', 'error');
+                if (window.toast) {
+                    window.toast.error('Error posting comment. Please try again.');
+                } else {
+                    showNotification('Error posting comment. Please try again.', 'error');
+                }
             })
             .finally(() => {
                 submitBtn.textContent = originalText;
@@ -210,11 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
-    // Make functions globally available
-    window.replyToComment = function(commentId) {
-        // Implementation for reply functionality
-        console.log('Reply to comment:', commentId);
-    };
+    // Functions are now defined in comment-item.blade.php
     
     // Simple MD5 function for Gravatar
     function md5(string) {

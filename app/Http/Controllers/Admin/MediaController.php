@@ -75,7 +75,7 @@ class MediaController extends Controller
                 $optimized = true;
             } catch (\Exception $e) {
                 // If optimization fails (no GD/Imagick), store normally
-                \Log::warning('Image optimization failed, storing original: ' . $e->getMessage());
+                logger()->warning('Image optimization failed, storing original: ' . $e->getMessage());
             }
         }
         

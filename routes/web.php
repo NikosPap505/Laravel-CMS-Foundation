@@ -25,8 +25,22 @@ use App\Http\Controllers\NewsletterController;
 // Custom Home Page Route
 Route::get('/', function () {
     $homePage = Page::where('slug', 'home')->first();
-    return view('home', ['page' => $homePage]);
+    
+    // Get recent posts for the homepage
+    $posts = \App\Models\Post::with(['category', 'featuredImage'])
+        ->where('status', 'published')
+        ->where('published_at', '<=', now())
+        ->latest('published_at')
+        ->limit(3)
+        ->get();
+    
+    return view('home', ['page' => $homePage, 'posts' => $posts]);
 })->name('home');
+
+// Features Page
+Route::get('/features', function () {
+    return view('features');
+})->name('features');
 
 // Admin Dashboard
 Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
@@ -46,6 +60,7 @@ Route::middleware(['auth', 'verified'])
 
         Route::resource('categories', CategoryController::class)->middleware('permission:manage categories');
         Route::resource('posts', AdminPostController::class)->middleware('permission:manage posts');
+        Route::post('posts/bulk-action', [AdminPostController::class, 'bulkAction'])->name('posts.bulk')->middleware('permission:manage posts');
         Route::resource('tags', \App\Http\Controllers\Admin\TagController::class)->middleware('permission:manage posts');
         Route::resource('comments', \App\Http\Controllers\Admin\CommentController::class)->middleware('permission:manage posts');
         Route::post('comments/{comment}/approve', [\App\Http\Controllers\Admin\CommentController::class, 'approve'])->name('comments.approve');

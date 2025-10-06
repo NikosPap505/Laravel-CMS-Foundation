@@ -61,7 +61,7 @@ class ResetPermissions extends Command
         $this->line("  ✓ Editor role has " . $editorRole->permissions->count() . " permissions");
         
         // Ensure admin user has admin role
-        $adminUser = User::where('email', 'admin@example.com')->first();
+        $adminUser = User::where('email', config('app.admin_email', 'admin@example.com'))->first();
         if ($adminUser) {
             if (!$adminUser->hasRole('admin')) {
                 $adminUser->assignRole('admin');
@@ -72,7 +72,7 @@ class ResetPermissions extends Command
         
         // Clear all sessions to force re-login
         $this->info('Clearing sessions...');
-        \DB::table('sessions')->truncate();
+        \Illuminate\Support\Facades\DB::table('sessions')->truncate();
         $this->line("  ✓ All users must login again");
         
         // Clear caches

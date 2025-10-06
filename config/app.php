@@ -30,6 +30,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Default admin credentials for seeding. Override these in your .env file
+    | for production use.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', 'admin@example.com'),
+    'admin_password' => env('ADMIN_PASSWORD', 'password123'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |

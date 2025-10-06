@@ -24,3 +24,8 @@ Homestead.yaml
 Thumbs.db
 phpunit.xml
 .env.testing
+
+# Documentation files (keep locally, don't push to GitHub)
+*.md
+!README.md
+fix-permissions.sh

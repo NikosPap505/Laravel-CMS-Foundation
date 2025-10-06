@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AdminUserSeeder extends Seeder
@@ -16,6 +17,13 @@ class AdminUserSeeder extends Seeder
     {
         // Create admin role if it doesn't exist
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        
+        // Ensure admin role has all permissions
+        $allPermissions = Permission::all();
+        if ($allPermissions->count() > 0) {
+            $adminRole->syncPermissions($allPermissions);
+            $this->command->info('Admin role updated with ' . $allPermissions->count() . ' permissions.');
+        }
         
         // Create admin user if it doesn't exist
         $adminUser = User::firstOrCreate(

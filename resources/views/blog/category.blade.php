@@ -3,6 +3,9 @@
 @section('title', 'Blog')
 
 @section('content')
+    {{-- Breadcrumbs --}}
+    {{ Breadcrumbs::render('blog.category', $category) }}
+    
     <h1 style="margin-bottom: 20px; font-size: 2em;">Category: {{ $category->name }}</h1>
 
     @forelse ($posts as $post)

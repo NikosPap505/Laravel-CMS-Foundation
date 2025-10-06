@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\PostPublished;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -28,7 +29,12 @@ class PostController extends Controller
         $validated = $request->validated();
         $validated['body'] = clean($validated['body']);
 
-        Post::create($validated);
+        $post = Post::create($validated);
+        
+        // Fire event if the post was published immediately
+        if ($post->status === 'published') {
+            event(new PostPublished($post, false));
+        }
         
         // Clear cache when new post is created
         clear_cms_cache();
@@ -47,7 +53,13 @@ class PostController extends Controller
         $validated = $request->validated();
         $validated['body'] = clean($validated['body']);
 
+        $wasPublished = $post->status === 'published';
         $post->update($validated);
+        
+        // Fire event if the post was just published (status changed to published)
+        if (!$wasPublished && $post->status === 'published') {
+            event(new PostPublished($post, false));
+        }
         
         // Clear cache when post is updated
         clear_cms_cache();

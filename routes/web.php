@@ -28,10 +28,10 @@ Route::get('/', function () {
     return view('home', ['page' => $homePage]);
 })->name('home');
 
-// Custom dashboard redirect
-Route::get('/dashboard', function () {
-    return redirect()->route('admin.pages.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Admin Dashboard
+Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Admin Routes
 Route::middleware(['auth', 'verified'])
@@ -44,8 +44,17 @@ Route::middleware(['auth', 'verified'])
         Route::resource('menu-items', MenuItemController::class);
         Route::post('menu-items/reorder', [MenuItemController::class, 'reorder'])->name('menu-items.reorder');
 
-        Route::resource('categories', CategoryController::class);
-        Route::resource('posts', AdminPostController::class);
+        Route::resource('categories', CategoryController::class)->middleware('permission:manage categories');
+        Route::resource('posts', AdminPostController::class)->middleware('permission:manage posts');
+        Route::resource('tags', \App\Http\Controllers\Admin\TagController::class)->middleware('permission:manage posts');
+        Route::resource('comments', \App\Http\Controllers\Admin\CommentController::class)->middleware('permission:manage posts');
+        Route::post('comments/{comment}/approve', [\App\Http\Controllers\Admin\CommentController::class, 'approve'])->name('comments.approve');
+        Route::post('comments/{comment}/reject', [\App\Http\Controllers\Admin\CommentController::class, 'reject'])->name('comments.reject');
+        Route::post('comments/{comment}/spam', [\App\Http\Controllers\Admin\CommentController::class, 'markAsSpam'])->name('comments.spam');
+        Route::post('comments/bulk-action', [\App\Http\Controllers\Admin\CommentController::class, 'bulkAction'])->name('comments.bulk');
+        Route::post('autosave', [\App\Http\Controllers\Admin\AutoSaveController::class, 'store'])->name('autosave.store');
+        Route::get('autosave', [\App\Http\Controllers\Admin\AutoSaveController::class, 'load'])->name('autosave.load');
+        Route::delete('autosave', [\App\Http\Controllers\Admin\AutoSaveController::class, 'clear'])->name('autosave.clear');
         Route::resource('media', MediaController::class);
         
         Route::post('upload-image', [ImageUploadController::class, 'store'])->name('images.upload')->middleware('throttle.uploads');
@@ -55,8 +64,10 @@ Route::middleware(['auth', 'verified'])
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('role:admin');
         Route::post('settings', [SettingController::class, 'store'])->name('settings.store')->middleware('role:admin');
 
-        // API routes
-        Route::get('/api/media', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])->name('api.media.index');
+        // API routes (with rate limiting)
+        Route::get('/api/media', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])
+            ->name('api.media.index')
+            ->middleware('throttle:60,1'); // 60 requests per minute
     });
 
 // Profile routes
@@ -84,6 +95,9 @@ Route::get('/services', function () {
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{category:slug}', [PostController::class, 'category'])->name('blog.category');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
+Route::post('/blog/{post:slug}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+Route::get('/blog/{post:slug}/comments', [\App\Http\Controllers\CommentController::class, 'loadComments'])->name('comments.load');
+Route::get('/feed', [PostController::class, 'feed'])->name('blog.feed');
 
 // Contact Form Routes
 Route::get('/contact', [ContactFormController::class, 'create'])->name('contact.create');

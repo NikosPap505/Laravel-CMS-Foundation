@@ -10,14 +10,12 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with('category')->published()->latest('published_at');
+        $query = Post::with('category', 'featuredImage')->published()->latest('published_at');
 
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('body', 'like', '%' . $searchTerm . '%');
-            });
+            // Use full-text search for better performance
+            $query->whereFullText(['title', 'excerpt', 'body'], $searchTerm);
         }
 
         $posts = $query->paginate(9)->withQueryString();
@@ -40,8 +38,30 @@ class PostController extends Controller
             abort(404);
         }
 
-        $post->load('category');
+        $post->load('category', 'tags');
+        $relatedPosts = $post->related(3);
+        
+        // Load approved comments with replies
+        $comments = $post->approvedComments()
+            ->with(['user', 'replies.user', 'replies.replies.user'])
+            ->orderBy('created_at', 'asc')
+            ->get();
+        
+        // Increment view count
+        $post->incrementViewCount();
 
-        return view('blog.show', compact('post'));
+        return view('blog.show', compact('post', 'relatedPosts', 'comments'));
+    }
+
+    public function feed()
+    {
+        $posts = Post::with('category', 'featuredImage')
+            ->published()
+            ->latest('published_at')
+            ->limit(20)
+            ->get();
+
+        return response()->view('blog.feed', compact('posts'))
+            ->header('Content-Type', 'application/xml');
     }
 }

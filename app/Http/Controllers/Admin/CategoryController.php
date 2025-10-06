@@ -50,6 +50,13 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        // Prevent deletion if category has posts
+        if ($category->posts()->count() > 0) {
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('error', 'Cannot delete category with existing posts. Please reassign or delete the posts first.');
+        }
+
         $category->delete();
 
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');

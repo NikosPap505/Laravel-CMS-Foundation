@@ -21,7 +21,7 @@ class StorePostRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:posts',
             'category_id' => 'required|exists:categories,id',
@@ -29,10 +29,18 @@ class StorePostRequest extends FormRequest
             'body' => 'required|string',
             'featured_image_id' => 'nullable|exists:media,id',
             'status' => 'required|in:draft,published,scheduled',
-            'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
         ];
+
+        // If status is scheduled, published_at is required and must be in the future
+        if ($this->status === 'scheduled') {
+            $rules['published_at'] = 'required|date|after:now';
+        } else {
+            $rules['published_at'] = 'nullable|date';
+        }
+
+        return $rules;
     }
 
     /**
@@ -52,7 +60,9 @@ class StorePostRequest extends FormRequest
             'featured_image_id.exists' => 'The selected featured image does not exist.',
             'status.required' => 'Please select a status for this post.',
             'status.in' => 'The status must be either draft, published, or scheduled.',
+            'published_at.required' => 'A publish date is required for scheduled posts.',
             'published_at.date' => 'The publish date must be a valid date.',
+            'published_at.after' => 'The publish date must be in the future for scheduled posts.',
             'meta_title.max' => 'The meta title may not be greater than 255 characters.',
         ];
     }

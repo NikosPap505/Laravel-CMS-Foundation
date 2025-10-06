@@ -15,6 +15,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Category</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Publish Date</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -30,6 +31,19 @@
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning/20 text-warning">Scheduled</span>
                                 @else
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-500/20 text-gray-400">Draft</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-sm text-text-secondary">
+                                @if($post->status == 'scheduled' && $post->published_at)
+                                    <span class="text-warning" title="{{ $post->published_at->format('Y-m-d H:i:s') }}">
+                                        {{ $post->published_at->diffForHumans() }}
+                                    </span>
+                                @elseif($post->status == 'published' && $post->published_at)
+                                    <span title="{{ $post->published_at->format('Y-m-d H:i:s') }}">
+                                        {{ $post->published_at->format('M d, Y') }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-500">—</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right text-sm font-medium">

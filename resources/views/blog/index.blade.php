@@ -4,6 +4,9 @@
 
 @section('content')
     <div class="py-16 sm:py-20">
+        {{-- Breadcrumbs --}}
+        {{ Breadcrumbs::render('blog.index') }}
+        
         <div class="text-center">
             <h1 class="text-4xl font-bold text-text-primary mb-2">From the Blog</h1>
             <p class="text-lg text-text-secondary">Stay up to date with the latest news and insights from our team.</p>

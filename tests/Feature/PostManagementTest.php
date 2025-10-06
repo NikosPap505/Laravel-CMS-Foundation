@@ -20,8 +20,18 @@ class PostManagementTest extends TestCase
     {
         parent::setUp();
         
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        
+        // Create permissions
+        \Spatie\Permission\Models\Permission::create(['name' => 'manage posts']);
+        \Spatie\Permission\Models\Permission::create(['name' => 'manage categories']);
+        \Spatie\Permission\Models\Permission::create(['name' => 'manage pages']);
+        
         // Create roles
-        Role::create(['name' => 'admin']);
+        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole->givePermissionTo(\Spatie\Permission\Models\Permission::all());
+        
         Role::create(['name' => 'editor']);
         
         // Create user and assign admin role

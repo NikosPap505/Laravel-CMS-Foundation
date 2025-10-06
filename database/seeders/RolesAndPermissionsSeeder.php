@@ -13,19 +13,28 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // create permissions
-        Permission::create(['name' => 'manage pages']);
-        Permission::create(['name' => 'manage menus']);
-        Permission::create(['name' => 'manage posts']);
-        Permission::create(['name' => 'manage categories']);
-        Permission::create(['name' => 'manage users']);
+        // create permissions (using firstOrCreate to avoid duplicates)
+        $permissions = [
+            'manage pages',
+            'manage menus',
+            'manage posts',
+            'manage categories',
+            'manage users',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
         // create the 'editor' role and assign permissions
-        $editorRole = Role::create(['name' => 'editor']);
-        $editorRole->givePermissionTo(['manage posts', 'manage categories', 'manage pages']);
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
+        $editorRole->syncPermissions(['manage posts', 'manage categories', 'manage pages']);
 
         // create the 'admin' role and assign all permissions
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $adminRole->syncPermissions(Permission::all());
+        
+        $this->command->info('Roles and permissions created/updated successfully!');
+        $this->command->info('Admin role has ' . $adminRole->permissions->count() . ' permissions.');
     }
 }

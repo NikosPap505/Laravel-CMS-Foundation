@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class MediaController extends Controller
 {
@@ -47,14 +48,51 @@ class MediaController extends Controller
             return redirect()->back()->withErrors(['file' => 'File size too large. Maximum 10MB allowed.']);
         }
 
-        $path = $file->store('media', 'public');
+        // Try to optimize images (requires GD or Imagick extension)
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $optimized = false;
+        
+        if (in_array($extension, $imageExtensions)) {
+            try {
+                // Try to optimize the image
+                $image = Image::read($file);
+                
+                // Resize if too large (max 1920px width)
+                if ($image->width() > 1920) {
+                    $image->scale(width: 1920);
+                }
+                
+                // Encode with optimized quality
+                $encoded = $image->encode();
+                
+                // Store the optimized image
+                $filename = $file->hashName();
+                $path = 'media/' . $filename;
+                Storage::disk('public')->put($path, $encoded);
+                
+                $size = strlen($encoded);
+                $mimeType = $file->getMimeType();
+                $optimized = true;
+            } catch (\Exception $e) {
+                // If optimization fails (no GD/Imagick), store normally
+                \Log::warning('Image optimization failed, storing original: ' . $e->getMessage());
+            }
+        }
+        
+        // If not optimized (either not an image or optimization failed), store normally
+        if (!$optimized) {
+            $path = $file->store('media', 'public');
+            $size = $file->getSize();
+            $mimeType = $file->getMimeType();
+            $filename = $file->hashName();
+        }
 
         Media::create([
             'name' => $file->getClientOriginalName(),
-            'file_name' => $file->hashName(),
-            'mime_type' => $file->getMimeType(),
+            'file_name' => $filename,
+            'mime_type' => $mimeType,
             'path' => $path,
-            'size' => $file->getSize(),
+            'size' => $size,
         ]);
 
         return redirect()->route('admin.media.index')->with('success', 'Media uploaded successfully.');

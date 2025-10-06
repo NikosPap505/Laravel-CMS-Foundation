@@ -10,11 +10,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @php $seoItem = $post ?? $page ?? null; @endphp
-    <title>{{ $seoItem->meta_title ?? $seoItem->title ?? config('app.name', 'Laravel') }}</title>
-    @if(isset($seoItem->meta_description))
-        <meta name="description" content="{{ $seoItem->meta_description }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php 
+        $seoItem = $post ?? $page ?? null;
+        $title = $seoItem->meta_title ?? $seoItem->title ?? config('app.name', 'Laravel');
+        $description = $seoItem->meta_description ?? $seoItem->excerpt ?? '';
+        $image = isset($post) && $post->featuredImage ? Storage::url($post->featuredImage->path) : asset('images/default-og.jpg');
+        $url = url()->current();
+    @endphp
+    
+    <title>{{ $title }}</title>
+    @if($description)
+        <meta name="description" content="{{ $description }}">
     @endif
+    
+    {{-- Open Graph Meta Tags --}}
+    <meta property="og:title" content="{{ $title }}">
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:image" content="{{ $image }}">
+    <meta property="og:url" content="{{ $url }}">
+    <meta property="og:type" content="{{ isset($post) ? 'article' : 'website' }}">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    
+    {{-- Twitter Card Meta Tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $title }}">
+    <meta name="twitter:description" content="{{ $description }}">
+    <meta name="twitter:image" content="{{ $image }}">
+    
+    {{-- Canonical URL --}}
+    <link rel="canonical" href="{{ $url }}">
+    
+    {{-- RSS Feed --}}
+    <link rel="alternate" type="application/rss+xml" title="{{ config('app.name') }} RSS Feed" href="{{ route('blog.feed') }}">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-background text-text-secondary">
@@ -89,5 +118,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </footer>
 
-</body>
+    {{-- Admin Quick Actions Toolbar --}}
+    @include('components.admin-toolbar')
+    
+    </body>
 </html>

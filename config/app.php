@@ -33,13 +33,15 @@ return [
     | Admin Configuration
     |--------------------------------------------------------------------------
     |
-    | Default admin credentials for seeding. Override these in your .env file
-    | for production use.
+    | Admin credentials for seeding. These MUST be set in your .env file.
+    | Add these lines to your .env file:
+    | ADMIN_EMAIL=your-admin@yourdomain.com
+    | ADMIN_PASSWORD=your-secure-password
     |
     */
 
-    'admin_email' => env('ADMIN_EMAIL', 'admin@example.com'),
-    'admin_password' => env('ADMIN_PASSWORD', 'password123'),
+    'admin_email' => env('ADMIN_EMAIL'),
+    'admin_password' => env('ADMIN_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------

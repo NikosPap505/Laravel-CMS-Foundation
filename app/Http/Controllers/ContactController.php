@@ -25,7 +25,7 @@ class ContactController extends Controller
         ]);
 
         // Send email
-        Mail::to(config('mail.admin_email', config('app.admin_email', 'admin@example.com')))
+        Mail::to(config('mail.admin_email', config('app.admin_email')))
             ->send(new ContactFormSubmitted($validated));
 
         // Send notification to admin users

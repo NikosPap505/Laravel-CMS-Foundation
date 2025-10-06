@@ -61,7 +61,13 @@ class ResetPermissions extends Command
         $this->line("  ✓ Editor role has " . $editorRole->permissions->count() . " permissions");
         
         // Ensure admin user has admin role
-        $adminUser = User::where('email', config('app.admin_email', 'admin@example.com'))->first();
+        $adminEmail = config('app.admin_email');
+        if (!$adminEmail) {
+            $this->error('ADMIN_EMAIL must be set in your .env file!');
+            return Command::FAILURE;
+        }
+        
+        $adminUser = User::where('email', $adminEmail)->first();
         if ($adminUser) {
             if (!$adminUser->hasRole('admin')) {
                 $adminUser->assignRole('admin');

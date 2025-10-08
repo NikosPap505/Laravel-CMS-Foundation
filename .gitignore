@@ -29,3 +29,6 @@ phpunit.xml
 *.md
 !README.md
 fix-permissions.sh
+
+# Test files with sensitive data
+test_gemini.php

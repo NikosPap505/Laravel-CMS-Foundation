@@ -7,7 +7,7 @@
         <language>en-us</language>
         <lastBuildDate>{{ now()->toRssString() }}</lastBuildDate>
         <atom:link href="{{ route('blog.feed') }}" rel="self" type="application/rss+xml" />
-        
+
         @foreach($posts as $post)
         <item>
             <title><![CDATA[{{ $post->title }}]]></title>
@@ -24,4 +24,3 @@
         @endforeach
     </channel>
 </rss>
-

@@ -91,6 +91,7 @@ class PostTest extends TestCase
             'published_at',
             'meta_title',
             'meta_description',
+            'view_count',
         ];
         
         $this->assertEquals($expectedFillable, $fillable);

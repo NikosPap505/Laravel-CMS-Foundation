@@ -17,6 +17,7 @@
                             'admin.posts.index' => 'Posts',
                             'admin.comments.index' => 'Comments',
                             'admin.media.index' => 'Media',
+                            'admin.ai.index' => 'AI Assistant',
                         ];
                         $adminLinks = [
                             'admin.users.index' => 'Users',

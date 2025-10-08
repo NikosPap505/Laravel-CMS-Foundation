@@ -15,6 +15,7 @@ use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\Admin\AIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,19 @@ Route::middleware(['auth', 'verified'])
         Route::get('/api/media', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])
             ->name('api.media.index')
             ->middleware('throttle:60,1'); // 60 requests per minute
+        
+        // AI Assistant Routes
+        Route::prefix('ai')->name('ai.')->middleware('permission:manage posts')->group(function () {
+            Route::get('/', [AIController::class, 'index'])->name('index');
+            Route::post('/generate-blog-post', [AIController::class, 'generateBlogPost'])->name('generate-blog-post');
+            Route::post('/generate-meta-description', [AIController::class, 'generateMetaDescription'])->name('generate-meta-description');
+            Route::post('/generate-titles', [AIController::class, 'generateTitles'])->name('generate-titles');
+            Route::post('/generate-tags', [AIController::class, 'generateTags'])->name('generate-tags');
+            Route::post('/improve-content', [AIController::class, 'improveContent'])->name('improve-content');
+            Route::post('/analyze-content', [AIController::class, 'analyzeContent'])->name('analyze-content');
+            Route::post('/generate-social-post', [AIController::class, 'generateSocialPost'])->name('generate-social-post');
+            Route::get('/status', [AIController::class, 'status'])->name('status');
+        });
     });
 
 // Profile routes
@@ -125,6 +139,8 @@ Route::post('/newsletter-subscribe', [NewsletterController::class, 'store'])->na
 
 // Authentication routes (e.g., /login)
 require __DIR__.'/auth.php';
+
+
 
 // Public Page Route (must always be last)
 Route::get('/{page:slug}', [PublicPageController::class, 'show'])->name('page.show');

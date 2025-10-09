@@ -34,11 +34,11 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('file');
-        
+
         // Additional security checks
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt', 'mp4', 'mp3'];
         $extension = strtolower($file->getClientOriginalExtension());
-        
+
         if (!in_array($extension, $allowedExtensions)) {
             return redirect()->back()->withErrors(['file' => 'File type not allowed.']);
         }
@@ -51,25 +51,25 @@ class MediaController extends Controller
         // Try to optimize images (requires GD or Imagick extension)
         $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $optimized = false;
-        
+
         if (in_array($extension, $imageExtensions)) {
             try {
                 // Try to optimize the image
                 $image = Image::read($file);
-                
+
                 // Resize if too large (max 1920px width)
                 if ($image->width() > 1920) {
                     $image->scale(width: 1920);
                 }
-                
+
                 // Encode with optimized quality
                 $encoded = $image->encode();
-                
+
                 // Store the optimized image
                 $filename = $file->hashName();
                 $path = 'media/' . $filename;
                 Storage::disk('public')->put($path, $encoded);
-                
+
                 $size = strlen($encoded);
                 $mimeType = $file->getMimeType();
                 $optimized = true;
@@ -78,7 +78,7 @@ class MediaController extends Controller
                 logger()->warning('Image optimization failed, storing original: ' . $e->getMessage());
             }
         }
-        
+
         // If not optimized (either not an image or optimization failed), store normally
         if (!$optimized) {
             $path = $file->store('media', 'public');
@@ -87,13 +87,29 @@ class MediaController extends Controller
             $filename = $file->hashName();
         }
 
-        Media::create([
+        $media = Media::create([
             'name' => $file->getClientOriginalName(),
             'file_name' => $filename,
             'mime_type' => $mimeType,
             'path' => $path,
             'size' => $size,
         ]);
+
+        // Return JSON response for AJAX requests
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Media uploaded successfully.',
+                'media' => [
+                    'id' => $media->id,
+                    'name' => $media->name,
+                    'url' => asset('storage/' . $media->path),
+                    'alt_text' => $media->alt_text,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                ]
+            ]);
+        }
 
         return redirect()->route('admin.media.index')->with('success', 'Media uploaded successfully.');
     }

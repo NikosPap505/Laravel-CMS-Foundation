@@ -66,10 +66,10 @@
 
                 <!-- Action Buttons -->
                 <div class="flex space-x-3 mt-6">
-                    <button type="button" onclick="testConnection()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <button type="button" onclick="testConnection()" class="flex-1 btn-secondary">
                         Test Connection
                     </button>
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <button type="submit" class="flex-1 btn-primary">
                         Connect
                     </button>
                 </div>
@@ -111,25 +111,25 @@ function testConnection() {
     .then(data => {
         if (data.success) {
             button.innerHTML = 'Success!';
-            button.classList.remove('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
-            button.classList.add('bg-green-600', 'text-white');
+            button.classList.remove('btn-secondary');
+            button.classList.add('btn-success');
             
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.disabled = false;
-                button.classList.remove('bg-green-600', 'text-white');
-                button.classList.add('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+                button.classList.remove('btn-success');
+                button.classList.add('btn-secondary');
             }, 3000);
         } else {
             button.innerHTML = 'Failed';
-            button.classList.remove('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
-            button.classList.add('bg-red-600', 'text-white');
+            button.classList.remove('btn-secondary');
+            button.classList.add('btn-danger');
             
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.disabled = false;
-                button.classList.remove('bg-red-600', 'text-white');
-                button.classList.add('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-secondary');
             }, 3000);
             
             alert('Connection test failed: ' + data.message);

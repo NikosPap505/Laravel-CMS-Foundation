@@ -3,29 +3,26 @@
 @section('title', 'Posts Management')
 @section('subtitle', 'Create, edit, and manage your blog posts')
 
-@section('quick-actions')
-<a href="{{ route('admin.posts.create') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-    </svg>
-    Add Post
-</a>
-@endsection
-
 @section('content')
+<div class="py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-text-primary">Posts</h1>
+            <a href="{{ route('admin.posts.create') }}" class="btn-primary">Add Post</a>
+        </div>
 
         {{-- Bulk Action Bar --}}
         <div id="bulk-action-bar" class="hidden bg-blue-600 text-white p-4 rounded-lg shadow-lg mb-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <span class="font-semibold"><span id="selected-count">0</span> items selected</span>
                 <div class="flex gap-2">
-                    <button data-bulk-action="publish" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-sm font-medium transition text-white">
+                    <button data-bulk-action="publish" class="btn-success">
                         Publish
                     </button>
-                    <button data-bulk-action="draft" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md text-sm font-medium transition text-white">
+                    <button data-bulk-action="draft" class="btn-secondary">
                         Set as Draft
                     </button>
-                    <button data-bulk-action="delete" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md text-sm font-medium transition text-white">
+                    <button data-bulk-action="delete" class="btn-danger">
                         Delete
                     </button>
                 </div>
@@ -102,7 +99,7 @@
                                 <a href="{{ route('admin.posts.edit', $post) }}" class="text-blue-600 hover:text-blue-800 transition-colors duration-300">Edit</a>
                                 <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" class="inline-block ml-4" onsubmit="return confirm('Are you sure?');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition-colors duration-300">Delete</button>
+                                    <button type="submit" class="btn-danger text-sm">Delete</button>
                                 </form>
                             </td>
                         </tr>

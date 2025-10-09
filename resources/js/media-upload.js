@@ -132,6 +132,7 @@ class MediaUploader {
 
             xhr.open('POST', '/admin/media');
             xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+            xhr.setRequestHeader('Accept', 'application/json');
             xhr.send(formData);
 
         } catch (error) {

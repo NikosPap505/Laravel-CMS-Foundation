@@ -82,7 +82,7 @@
                     <div class="flex items-center gap-4">
                         <input type="file" name="file" id="file" class="text-sm transition-colors duration-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                                :class="theme === 'dark' ? 'text-gray-400' : 'text-gray-600'">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300">Upload</button>
+                        <button type="submit" class="btn-primary">Upload</button>
                         <a href="{{ route('admin.media.index') }}" class="text-sm transition-colors duration-300 hover:text-blue-600"
                            :class="theme === 'dark' ? 'text-gray-400' : 'text-gray-600'">Cancel</a>
                     </div>
@@ -288,7 +288,7 @@
                         <p class="text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}">${fileCount} Image${fileCount > 1 ? 's' : ''} Successfully Added</p>
                         <p class="text-sm mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">Your files are now ready for AI processing and editing</p>
                     </div>
-                    <button onclick="this.parentElement.parentElement.remove()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <button onclick="this.parentElement.parentElement.remove()" class="btn-success">
                         Got it!
                     </button>
                 </div>
@@ -511,10 +511,10 @@
                     </div>
                     
                     <div class="flex justify-end gap-2">
-                        <button onclick="uploadSingleFile(this)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300">
+                        <button onclick="uploadSingleFile(this)" class="btn-primary">
                             Upload
                         </button>
-                        <button onclick="removePreview(this)" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors duration-300">
+                        <button onclick="removePreview(this)" class="btn-danger">
                             Remove
                         </button>
                     </div>
@@ -713,7 +713,6 @@
         }
         
         alert('All files have been processed with AI!');
-        });
     });
 </script>
 @endpush

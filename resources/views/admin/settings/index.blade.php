@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'System Settings')
+@section('subtitle', 'Configure your CMS settings')
 
 @section('content')
 <div class="py-12">

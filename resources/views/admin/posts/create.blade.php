@@ -1,11 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Create New Post')
+@section('subtitle', 'Write and publish a new blog post')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-surface overflow-hidden shadow-lg sm:rounded-lg border border-border">
-            <div class="p-6 border-b border-border">
-                <h1 class="text-2xl font-semibold text-text-primary mb-6">Create Post</h1>
+<div class="max-w-4xl mx-auto">
+    <div class="rounded-lg shadow-sm overflow-hidden transition-colors duration-300"
+         :class="theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'">
+        <div class="p-6 border-b transition-colors duration-300"
+             :class="theme === 'dark' ? 'border-gray-700' : 'border-gray-200'">
 
                 <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf

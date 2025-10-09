@@ -2,6 +2,10 @@
 
 @section('title', 'Blog - Professional CMS Solutions')
 
+@php
+    $breadcrumbs = Breadcrumbs::generate('blog.index');
+@endphp
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative py-20 md:py-32 overflow-hidden">
@@ -17,10 +21,6 @@
         
         <!-- Main Content -->
         <div class="relative z-10 container mx-auto px-4 text-center">
-            <!-- Breadcrumbs -->
-            <div class="mb-8">
-                {{ Breadcrumbs::render('blog.index') }}
-            </div>
             
             <!-- Badge -->
             <div class="inline-flex items-center px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-8 animate-fade-in">
@@ -77,7 +77,6 @@
                             <label class="text-sm font-medium text-text-secondary">Sort by:</label>
                             <select name="sort" class="px-4 py-2 bg-background/50 border border-border/50 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
-                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
                                 <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
                             </select>
                         </div>
@@ -131,7 +130,9 @@
                             </h2>
                             
                             <!-- Excerpt -->
-                            <p class="text-text-secondary mb-6 leading-relaxed">{{ $post->excerpt }}</p>
+                            <div class="text-text-secondary mb-6 leading-relaxed prose-excerpt">
+                                {!! $post->excerpt !!}
+                            </div>
                             
                             <!-- Meta Info -->
                             <div class="flex items-center justify-between text-sm text-text-secondary mb-6">
@@ -146,7 +147,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
-                                    {{ $post->view_count }} views
                                 </span>
                             </div>
                             
@@ -240,6 +240,24 @@
     /* Smooth Scrolling */
     html {
         scroll-behavior: smooth;
+    }
+    
+    /* Excerpt styling */
+    .prose-excerpt {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    .prose-excerpt p {
+        margin: 0;
+    }
+    
+    .prose-excerpt strong {
+        font-weight: 600;
+    }
+    
+    .prose-excerpt em {
+        font-style: italic;
     }
 </style>
 @endpush

@@ -21,4 +21,34 @@
   .link-delete {
     @apply text-error font-semibold hover:underline;
   }
+  
+  /* Breadcrumb Navigation */
+  .breadcrumb-nav {
+    @apply animate-fade-in;
+  }
+  
+  .breadcrumb-nav ol {
+    @apply flex items-center gap-1;
+  }
+  
+  .breadcrumb-nav ol li {
+    @apply flex items-center;
+  }
+  
+  .breadcrumb-nav ol li a {
+    @apply relative overflow-hidden flex items-center;
+  }
+  
+  .breadcrumb-nav ol li a::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-accent/5 to-accent/10 transform scale-x-0 origin-left transition-transform duration-300;
+  }
+  
+  .breadcrumb-nav ol li a:hover::before {
+    @apply scale-x-100;
+  }
+  
+  .breadcrumb-nav ol li a:hover {
+    @apply transform translate-x-1;
+  }
 }

@@ -27,9 +27,6 @@ class PostController extends Controller
 
         // Sort functionality
         switch ($request->get('sort', 'latest')) {
-            case 'popular':
-                $query->orderBy('view_count', 'desc');
-                break;
             case 'oldest':
                 $query->orderBy('published_at', 'asc');
                 break;
@@ -61,15 +58,13 @@ class PostController extends Controller
 
         $post->load('category', 'tags');
         $relatedPosts = $post->related(3);
-        
+
         // Load approved comments with replies
         $comments = $post->approvedComments()
             ->with(['user', 'replies.user', 'replies.replies.user'])
             ->orderBy('created_at', 'asc')
             ->get();
-        
-        // Increment view count
-        $post->incrementViewCount();
+
 
         return view('blog.show', compact('post', 'relatedPosts', 'comments'));
     }

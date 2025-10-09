@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Categories Management')
+@section('subtitle', 'Organize your content with categories')
 @section('content')
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

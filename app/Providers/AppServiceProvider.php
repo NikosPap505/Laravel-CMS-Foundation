@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\Integration\IntegrationManager::class);
     }
 
     /**
@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
             $footerMenuItems = MenuItem::where('show_in_footer', true)->orderBy('order', 'asc')->get();
 
             $view->with('headerMenuItems', $headerMenuItems)
-                 ->with('footerMenuItems', $footerMenuItems);
+                ->with('footerMenuItems', $footerMenuItems);
         });
     }
 }

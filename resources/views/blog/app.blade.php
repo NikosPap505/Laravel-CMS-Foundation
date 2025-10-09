@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ auth()->check() ? auth()->user()->theme_preference ?? 'light' : 'light' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,13 +12,13 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/css/themes.css', 'resources/js/app.js'])
 
         <!-- TinyMCE -->
         <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased transition-colors duration-300" data-theme="{{ auth()->check() ? auth()->user()->theme_preference ?? 'light' : 'light' }}">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 

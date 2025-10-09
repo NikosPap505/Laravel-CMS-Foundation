@@ -2,6 +2,10 @@
 
 @section('title', $post->title . ' - Professional CMS Solutions')
 
+@php
+    $breadcrumbs = Breadcrumbs::generate('blog.show', $post);
+@endphp
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative py-20 md:py-32 overflow-hidden">
@@ -17,10 +21,6 @@
         
         <!-- Main Content -->
         <div class="relative z-10 container mx-auto px-4">
-            <!-- Breadcrumbs -->
-            <div class="mb-8">
-                {{ Breadcrumbs::render('blog.show', $post) }}
-            </div>
             
             <!-- Featured Image -->
             @if ($post->featuredImage)
@@ -73,7 +73,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                        {{ $post->view_count }} views
                     </span>
                 </div>
             </div>
@@ -99,19 +98,6 @@
                                     <!-- TOC will be populated by JavaScript -->
                                 </div>
                                 
-                                <!-- Reading Progress -->
-                                <div class="mt-6 pt-6 border-t border-border/50">
-                                    <div class="flex items-center justify-between text-sm text-text-secondary mb-2">
-                                        <span>Reading Progress</span>
-                                        <span id="reading-progress-text">0%</span>
-                                    </div>
-                                    <div class="w-full bg-border/50 rounded-full h-2">
-                                        <div id="reading-progress-bar" class="bg-accent h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                                    </div>
-                                    <div class="mt-2 text-xs text-text-secondary">
-                                        <span id="reading-time">~{{ ceil(str_word_count(strip_tags($post->body)) / 200) }} min read</span>
-                                    </div>
-                                </div>
                                 
                                 <!-- Social Sharing -->
                                 <div class="mt-6 pt-6 border-t border-border/50">
@@ -147,7 +133,7 @@
                     <!-- Main Article Content -->
                     <article class="lg:col-span-3 order-1 lg:order-2">
                         <div class="bg-surface/50 backdrop-blur-sm rounded-3xl border border-border/50 p-8 md:p-12 shadow-xl">
-                            <div class="enhanced-prose max-w-none">
+                            <div class="enhanced-prose max-w-none prose-content">
                                 {!! $post->body !!}
                             </div>
                         </div>
@@ -290,6 +276,145 @@
         line-height: 1.8;
         color: var(--text-secondary);
         max-width: none;
+    }
+    
+    /* Ensure TinyMCE content renders properly */
+    .prose-content {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.8;
+        color: var(--text-secondary);
+    }
+    
+    .prose-content * {
+        max-width: 100%;
+    }
+    
+    /* Specific styling for TinyMCE-generated content */
+    .prose-content h1, .prose-content h2, .prose-content h3, 
+    .prose-content h4, .prose-content h5, .prose-content h6 {
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+        margin: 2rem 0 1rem 0 !important;
+        line-height: 1.3 !important;
+        clear: both;
+    }
+    
+    .prose-content h1 { font-size: 2.5rem !important; }
+    .prose-content h2 { 
+        font-size: 2rem !important; 
+        border-bottom: 2px solid var(--accent) !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .prose-content h3 { font-size: 1.5rem !important; }
+    .prose-content h4 { font-size: 1.25rem !important; }
+    .prose-content h5, .prose-content h6 { font-size: 1.125rem !important; }
+    
+    .prose-content p {
+        color: var(--text-secondary) !important;
+        line-height: 1.8 !important;
+        margin: 1.5rem 0 !important;
+        font-size: 18px !important;
+    }
+    
+    .prose-content ul, .prose-content ol {
+        margin: 1.5rem 0 !important;
+        padding-left: 2rem !important;
+    }
+    
+    .prose-content li {
+        margin: 0.75rem 0 !important;
+        line-height: 1.7 !important;
+        color: var(--text-secondary) !important;
+    }
+    
+    .prose-content blockquote {
+        border-left: 4px solid var(--accent) !important;
+        background: var(--surface) !important;
+        padding: 2rem !important;
+        margin: 2rem 0 !important;
+        border-radius: 0.75rem !important;
+        font-style: italic !important;
+    }
+    
+    .prose-content blockquote p {
+        margin: 0 !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .prose-content img {
+        border-radius: 0.75rem !important;
+        margin: 2rem 0 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
+    }
+    
+    .prose-content table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 2rem 0 !important;
+        background: var(--surface) !important;
+        border-radius: 0.75rem !important;
+        overflow: hidden !important;
+    }
+    
+    .prose-content th, .prose-content td {
+        padding: 1rem !important;
+        border-bottom: 1px solid var(--border) !important;
+        text-align: left !important;
+    }
+    
+    .prose-content th {
+        background: var(--accent) !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    .prose-content a {
+        color: var(--accent) !important;
+        text-decoration: none !important;
+        border-bottom: 1px solid transparent !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .prose-content a:hover {
+        border-bottom-color: var(--accent) !important;
+    }
+    
+    .prose-content code {
+        background: var(--surface) !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 0.375rem !important;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+        color: var(--accent) !important;
+        border: 1px solid var(--border) !important;
+    }
+    
+    .prose-content pre {
+        background: #1a1a1a !important;
+        border-radius: 0.75rem !important;
+        padding: 1.5rem !important;
+        margin: 2rem 0 !important;
+        border: 1px solid var(--border) !important;
+        overflow-x: auto !important;
+    }
+    
+    .prose-content pre code {
+        background: none !important;
+        padding: 0 !important;
+        border: none !important;
+        color: #e2e8f0 !important;
+    }
+    
+    .prose-content strong {
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+    }
+    
+    .prose-content em {
+        color: var(--text-primary) !important;
+        font-style: italic !important;
     }
     
     /* Typography - High specificity to override TinyMCE */
@@ -462,28 +587,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tocContainer.innerHTML = tocHTML;
     }
     
-    // Reading Progress Tracker
-    function updateReadingProgress() {
-        const article = document.querySelector('.enhanced-prose');
-        const progressBar = document.getElementById('reading-progress-bar');
-        const progressText = document.getElementById('reading-progress-text');
-        
-        if (!article || !progressBar) return;
-        
-        const articleTop = article.offsetTop;
-        const articleHeight = article.offsetHeight;
-        const windowHeight = window.innerHeight;
-        const scrollTop = window.pageYOffset;
-        
-        const progress = Math.min(
-            Math.max((scrollTop - articleTop + windowHeight / 2) / articleHeight, 0),
-            1
-        );
-        
-        const percentage = Math.round(progress * 100);
-        progressBar.style.width = percentage + '%';
-        progressText.textContent = percentage + '%';
-    }
     
     // Smooth scroll for TOC links
     function initSmoothScroll() {
@@ -507,30 +610,7 @@ document.addEventListener('DOMContentLoaded', function() {
     generateTOC();
     initSmoothScroll();
     
-    // Update reading progress on scroll
-    let ticking = false;
-    function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(updateReadingProgress);
-            ticking = true;
-        }
-    }
     
-    window.addEventListener('scroll', function() {
-        requestTick();
-        ticking = false;
-    });
-    
-    // Initial progress update
-    updateReadingProgress();
-    
-    // Add reading time calculation
-    const wordCount = document.querySelector('.enhanced-prose').textContent.split(/\s+/).length;
-    const readingTime = Math.ceil(wordCount / 200);
-    const readingTimeElement = document.getElementById('reading-time');
-    if (readingTimeElement) {
-        readingTimeElement.textContent = `~${readingTime} min read`;
-    }
     
     // Add copy code functionality for code blocks
     document.querySelectorAll('.enhanced-prose pre').forEach(pre => {

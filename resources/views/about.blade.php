@@ -2,6 +2,10 @@
 
 @section('title', ($page->meta_title ?? 'About Us') . ' - Professional CMS Solutions')
 
+@php
+    $breadcrumbs = Breadcrumbs::generate('about');
+@endphp
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative py-20 md:py-32 overflow-hidden">
@@ -33,7 +37,7 @@
                     </h1>
                     
                     <!-- Content -->
-                    <div class="prose prose-invert prose-lg max-w-none prose-h2:text-accent prose-h3:text-accent prose-strong:text-text-primary prose-p:text-text-secondary prose-a:text-accent">
+                    <div class="enhanced-prose max-w-none">
                         {!! $page->content ?? '<p class="text-xl text-text-secondary leading-relaxed">We are a team of passionate developers and designers dedicated to creating exceptional digital experiences. Our mission is to empower businesses with cutting-edge technology and innovative solutions that drive real results.</p>' !!}
                     </div>
                 </div>
@@ -208,30 +212,149 @@
         scroll-behavior: smooth;
     }
     
-    /* Prose Styling */
-    .prose {
+    /* Enhanced Prose Styling for Better Readability */
+    .enhanced-prose {
         color: inherit;
+        font-size: 18px;
+        line-height: 1.8;
+        max-width: none;
     }
     
-    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-        color: var(--text-primary);
-        font-weight: 700;
+    /* Typography - High specificity to override TinyMCE */
+    .enhanced-prose h1,
+    .enhanced-prose h2,
+    .enhanced-prose h3,
+    .enhanced-prose h4,
+    .enhanced-prose h5,
+    .enhanced-prose h6 {
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+        margin: 2rem 0 1rem 0 !important;
+        line-height: 1.3 !important;
     }
     
-    .prose p {
-        color: var(--text-secondary);
-        line-height: 1.7;
+    .enhanced-prose h1 { font-size: 2.5rem !important; }
+    .enhanced-prose h2 { 
+        font-size: 2rem !important; 
+        border-bottom: 2px solid var(--accent) !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .enhanced-prose h3 { font-size: 1.5rem !important; }
+    .enhanced-prose h4 { font-size: 1.25rem !important; }
+    .enhanced-prose h5, .enhanced-prose h6 { font-size: 1.125rem !important; }
+    
+    /* Paragraphs */
+    .enhanced-prose p {
+        color: var(--text-secondary) !important;
+        line-height: 1.8 !important;
+        margin: 1.5rem 0 !important;
+        font-size: 18px !important;
     }
     
-    .prose a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 500;
+    /* Links */
+    .enhanced-prose a {
+        color: var(--accent) !important;
+        text-decoration: none !important;
+        border-bottom: 1px solid transparent !important;
+        transition: all 0.3s ease !important;
     }
     
-    .prose a:hover {
-        color: var(--accent);
-        opacity: 0.8;
+    .enhanced-prose a:hover {
+        border-bottom-color: var(--accent) !important;
+    }
+    
+    /* Lists */
+    .enhanced-prose ul, .enhanced-prose ol {
+        margin: 1.5rem 0 !important;
+        padding-left: 2rem !important;
+    }
+    
+    .enhanced-prose li {
+        margin: 0.75rem 0 !important;
+        line-height: 1.7 !important;
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Code */
+    .enhanced-prose code {
+        background: var(--surface) !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 0.375rem !important;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+        color: var(--accent) !important;
+        border: 1px solid var(--border) !important;
+    }
+    
+    .enhanced-prose pre {
+        background: #1a1a1a !important;
+        border-radius: 0.75rem !important;
+        padding: 1.5rem !important;
+        margin: 2rem 0 !important;
+        border: 1px solid var(--border) !important;
+        overflow-x: auto !important;
+    }
+    
+    .enhanced-prose pre code {
+        background: none !important;
+        padding: 0 !important;
+        border: none !important;
+        color: #e2e8f0 !important;
+    }
+    
+    /* Images */
+    .enhanced-prose img {
+        border-radius: 0.75rem !important;
+        margin: 2rem 0 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2) !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    /* Tables */
+    .enhanced-prose table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 2rem 0 !important;
+        background: var(--surface) !important;
+        border-radius: 0.75rem !important;
+        overflow: hidden !important;
+    }
+    
+    .enhanced-prose th, .enhanced-prose td {
+        padding: 1rem !important;
+        border-bottom: 1px solid var(--border) !important;
+    }
+    
+    .enhanced-prose th {
+        background: var(--accent) !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Blockquotes */
+    .enhanced-prose blockquote {
+        border-left: 4px solid var(--accent) !important;
+        background: var(--surface) !important;
+        padding: 2rem !important;
+        margin: 2rem 0 !important;
+        border-radius: 0.75rem !important;
+        font-style: italic !important;
+    }
+    
+    .enhanced-prose blockquote p {
+        margin: 0 !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Strong and Emphasis */
+    .enhanced-prose strong {
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+    }
+    
+    .enhanced-prose em {
+        color: var(--text-primary) !important;
+        font-style: italic !important;
     }
 </style>
 @endpush

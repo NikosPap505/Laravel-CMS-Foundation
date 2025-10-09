@@ -23,28 +23,28 @@ class DemoDataSeeder extends Seeder
 
         // Create demo users
         $this->createDemoUsers();
-        
+
         // Create categories
         $this->createCategories();
-        
+
         // Create tags
         $this->createTags();
-        
+
         // Create pages
         $this->createPages();
-        
+
         // Create blog posts
         $this->createBlogPosts();
-        
+
         // Create comments and replies
         $this->createComments();
-        
+
         // Create menu items
         $this->createMenuItems();
-        
+
         // Create newsletter subscribers
         $this->createNewsletterSubscribers();
-        
+
         // Create media items
         $this->createMediaItems();
 
@@ -123,11 +123,30 @@ class DemoDataSeeder extends Seeder
         $this->command->info('🏷️ Creating tags...');
 
         $tags = [
-            'Laravel', 'React', 'Vue.js', 'JavaScript', 'PHP', 'CSS', 'HTML',
-            'SEO', 'Social Media', 'Content Marketing', 'Email Marketing',
-            'Startup', 'Entrepreneurship', 'Leadership', 'Productivity',
-            'AI', 'Machine Learning', 'Blockchain', 'Cloud Computing',
-            'UI Design', 'UX Design', 'Figma', 'Adobe', 'Typography'
+            'Laravel',
+            'React',
+            'Vue.js',
+            'JavaScript',
+            'PHP',
+            'CSS',
+            'HTML',
+            'SEO',
+            'Social Media',
+            'Content Marketing',
+            'Email Marketing',
+            'Startup',
+            'Entrepreneurship',
+            'Leadership',
+            'Productivity',
+            'AI',
+            'Machine Learning',
+            'Blockchain',
+            'Cloud Computing',
+            'UI Design',
+            'UX Design',
+            'Figma',
+            'Adobe',
+            'Typography'
         ];
 
         foreach ($tags as $tagName) {
@@ -201,7 +220,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getLaravelPostContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(2),
-                'view_count' => 1247,
                 'category_id' => $webDevCategory->id, // Web Development
                 'meta_title' => '10 Essential Laravel Features - Complete Developer Guide',
                 'meta_description' => 'Master Laravel with these 10 essential features. Boost your development skills and build better applications faster.'
@@ -213,7 +231,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getWebDevTrendsContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(5),
-                'view_count' => 2156,
                 'category_id' => $webDevCategory->id, // Web Development
                 'meta_title' => 'Web Development Trends 2024 - Future of Tech',
                 'meta_description' => 'Stay ahead with the latest web development trends. AI, WebAssembly, and more shaping the future of web.'
@@ -225,7 +242,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getMarketingContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(8),
-                'view_count' => 1834,
                 'category_id' => $marketingCategory->id, // Digital Marketing
                 'meta_title' => 'Digital Marketing Strategies 2024 - Proven Methods',
                 'meta_description' => 'Effective digital marketing strategies that work. Boost your online presence and drive real business results.'
@@ -237,7 +253,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getStartupContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(12),
-                'view_count' => 3421,
                 'category_id' => $businessCategory->id, // Business
                 'meta_title' => 'Startup Success Guide - Lessons from Industry Leaders',
                 'meta_description' => 'Learn from successful entrepreneurs. Key principles and strategies for building a thriving startup business.'
@@ -249,7 +264,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getAIContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(15),
-                'view_count' => 2890,
                 'category_id' => $techCategory->id, // Technology
                 'meta_title' => 'AI Revolution - Machine Learning in Business',
                 'meta_description' => 'How AI and machine learning are transforming business. Real-world applications and future opportunities.'
@@ -261,7 +275,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getDesignContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(18),
-                'view_count' => 1654,
                 'category_id' => $designCategory->id, // Design
                 'meta_title' => 'UI/UX Design Principles - Convert Visitors to Customers',
                 'meta_description' => 'Proven UI/UX design principles that drive conversions. Create user experiences that turn visitors into customers.'
@@ -273,7 +286,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getFrameworkComparisonContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(22),
-                'view_count' => 3120,
                 'category_id' => $webDevCategory->id, // Web Development
                 'meta_title' => 'React vs Vue.js - Complete Framework Comparison',
                 'meta_description' => 'Detailed comparison of React and Vue.js. Choose the right JavaScript framework for your project needs.'
@@ -285,7 +297,6 @@ class DemoDataSeeder extends Seeder
                 'body' => $this->getSEOContent(),
                 'status' => 'published',
                 'published_at' => now()->subDays(25),
-                'view_count' => 2789,
                 'category_id' => $marketingCategory->id, // Digital Marketing
                 'meta_title' => 'Advanced SEO Techniques 2024 - Master Search Rankings',
                 'meta_description' => 'Advanced SEO strategies for 2024. Dominate search rankings with these proven techniques and tactics.'
@@ -294,7 +305,7 @@ class DemoDataSeeder extends Seeder
 
         foreach ($posts as $post) {
             $createdPost = Post::firstOrCreate(['slug' => $post['slug']], $post);
-            
+
             // Add random tags to posts (only if post was just created)
             if ($createdPost->wasRecentlyCreated) {
                 $randomTags = Tag::inRandomOrder()->limit(rand(2, 5))->pluck('id');
@@ -310,11 +321,11 @@ class DemoDataSeeder extends Seeder
         $this->command->info('💬 Creating engaging comments and replies...');
 
         $posts = Post::all();
-        
+
         foreach ($posts as $post) {
             // Create 3-8 comments per post
             $commentCount = rand(3, 8);
-            
+
             for ($i = 0; $i < $commentCount; $i++) {
                 $comment = Comment::create([
                     'post_id' => $post->id,
@@ -331,7 +342,7 @@ class DemoDataSeeder extends Seeder
                 // 30% chance of having replies
                 if (rand(1, 100) <= 30) {
                     $replyCount = rand(1, 3);
-                    
+
                     for ($j = 0; $j < $replyCount; $j++) {
                         Comment::create([
                             'post_id' => $post->id,
@@ -497,9 +508,21 @@ class DemoDataSeeder extends Seeder
     private function getRandomName()
     {
         $names = [
-            'Alex Johnson', 'Sarah Williams', 'Mike Chen', 'Emma Davis', 'David Brown',
-            'Lisa Garcia', 'Tom Wilson', 'Anna Martinez', 'Chris Anderson', 'Maria Taylor',
-            'John Smith', 'Jennifer Lee', 'Robert Jones', 'Amanda White', 'Daniel Black'
+            'Alex Johnson',
+            'Sarah Williams',
+            'Mike Chen',
+            'Emma Davis',
+            'David Brown',
+            'Lisa Garcia',
+            'Tom Wilson',
+            'Anna Martinez',
+            'Chris Anderson',
+            'Maria Taylor',
+            'John Smith',
+            'Jennifer Lee',
+            'Robert Jones',
+            'Amanda White',
+            'Daniel Black'
         ];
         return $names[array_rand($names)];
     }

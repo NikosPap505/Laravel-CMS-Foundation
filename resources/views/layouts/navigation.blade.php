@@ -18,6 +18,7 @@
                             'admin.comments.index' => 'Comments',
                             'admin.media.index' => 'Media',
                             'admin.ai.index' => 'AI Assistant',
+                            'admin.integrations.index' => 'Integration Hub',
                         ];
                         $adminLinks = [
                             'admin.users.index' => 'Users',
@@ -40,7 +41,8 @@
                 </div>
             </div>
 
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-text-secondary bg-surface hover:text-text-primary focus:outline-none transition ease-in-out duration-150">
@@ -50,6 +52,12 @@
                     </x-slot>
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
+                        <x-dropdown-link :href="route('admin.ai.usage-page')" class="text-sm text-gray-600 hover:text-gray-900">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                            AI Usage
+                        </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Log Out') }}</x-dropdown-link>

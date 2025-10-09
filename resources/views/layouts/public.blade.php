@@ -67,6 +67,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </ul>
             </nav>
         </div>
+        
+        <!-- Breadcrumbs Section -->
+        @if(isset($breadcrumbs) && !$breadcrumbs->isEmpty())
+            <div class="bg-surface/50 backdrop-blur-sm border-t border-border/30">
+                <div class="container mx-auto px-4 py-3">
+                    <x-breadcrumbs :breadcrumbs="$breadcrumbs" />
+                </div>
+            </div>
+        @endif
     </header>
 
     <main>

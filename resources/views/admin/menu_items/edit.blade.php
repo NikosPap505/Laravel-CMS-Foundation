@@ -1,10 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Edit Menu Item')
+@section('subtitle', 'Update navigation menu item')
+
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h1 class="text-2xl font-semibold text-text-primary mb-6">Edit Menu Item</h1>
-        <div class="bg-surface overflow-hidden shadow-lg sm:rounded-lg border border-border">
-            <div class="p-6">
+
+<div class="max-w-2xl mx-auto">
+    <div class="rounded-lg shadow-sm border transition-colors duration-300"
+         :class="theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'">
+        <div class="p-6">
                 <form action="{{ route('admin.menu-items.update', $menuItem) }}" method="POST">
                     @csrf
                     @method('PUT')

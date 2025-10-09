@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use App\Services\AI\Contracts\AIProviderInterface;
 use App\Services\AI\Providers\OpenAIProvider;
 use App\Services\AI\Providers\GeminiProvider;
+use App\Models\AIUsage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -26,7 +27,7 @@ class AIService
     protected function initializeProvider(): void
     {
         $providerName = $this->config['default'] ?? 'openai';
-        
+
         try {
             switch ($providerName) {
                 case 'openai':
@@ -46,46 +47,60 @@ class AIService
         } catch (Exception $e) {
             // Create a null provider for development when AI is not configured
             $this->provider = new class implements \App\Services\AI\Contracts\AIProviderInterface {
-                public function generateContent(string $prompt, array $parameters = []): string {
+                public function generateContent(string $prompt, array $parameters = []): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateBlogPost(string $topic, array $options = []): array {
+                public function generateBlogPost(string $topic, array $options = []): array
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateMetaDescription(string $title, string $content = '', array $options = []): string {
+                public function generateMetaDescription(string $title, string $content = '', array $options = []): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateTitleSuggestions(string $topic, array $options = []): array {
+                public function generateTitleSuggestions(string $topic, array $options = []): array
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function improveContent(string $content, array $options = []): array {
+                public function improveContent(string $content, array $options = []): array
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateTags(string $content, array $options = []): array {
+                public function generateTags(string $content, array $options = []): array
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateImageAltText(string $imageUrl, string $context = ''): string {
+                public function generateImageAltText(string $imageUrl, string $context = ''): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function translateContent(string $content, string $targetLanguage, array $options = []): string {
+                public function translateContent(string $content, string $targetLanguage, array $options = []): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function analyzeSentiment(string $content): array {
+                public function analyzeSentiment(string $content): array
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateProductDescription(string $productName, array $features = [], array $options = []): string {
+                public function generateProductDescription(string $productName, array $features = [], array $options = []): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function generateSocialMediaPost(string $content, string $platform = 'twitter', array $options = []): string {
+                public function generateSocialMediaPost(string $content, string $platform = 'twitter', array $options = []): string
+                {
                     throw new Exception('AI service not configured. Please set your AI provider API key (OpenAI or Gemini).');
                 }
-                public function isAvailable(): bool {
+                public function isAvailable(): bool
+                {
                     return false;
                 }
-                public function getConfig(): array {
+                public function getConfig(): array
+                {
                     return [];
                 }
-                public function getUsageStats(): array {
+                public function getUsageStats(): array
+                {
                     return [];
                 }
             };
@@ -103,7 +118,7 @@ class AIService
     {
         try {
             $result = $this->provider->generateBlogPost($topic, $options);
-            
+
             // Log successful generation
             Log::info('AI Blog Post Generated', [
                 'topic' => $topic,
@@ -112,7 +127,6 @@ class AIService
             ]);
 
             return $result;
-
         } catch (Exception $e) {
             Log::error('AI Blog Post Generation Failed', [
                 'topic' => $topic,
@@ -132,7 +146,9 @@ class AIService
      */
     public function generateMetaDescription(string $title, string $content = '', array $options = []): string
     {
-        return $this->provider->generateMetaDescription($title, $content, $options);
+        $result = $this->provider->generateMetaDescription($title, $content, $options);
+        $this->trackUsage('meta_description', 0.01);
+        return $result;
     }
 
     /**
@@ -144,7 +160,9 @@ class AIService
      */
     public function generateTitleSuggestions(string $topic, array $options = []): array
     {
-        return $this->provider->generateTitleSuggestions($topic, $options);
+        $result = $this->provider->generateTitleSuggestions($topic, $options);
+        $this->trackUsage('title_generation', 0.02);
+        return $result;
     }
 
     /**
@@ -156,7 +174,9 @@ class AIService
      */
     public function improveContent(string $content, array $options = []): array
     {
-        return $this->provider->improveContent($content, $options);
+        $result = $this->provider->improveContent($content, $options);
+        $this->trackUsage('content_improvement', 0.03);
+        return $result;
     }
 
     /**
@@ -169,9 +189,10 @@ class AIService
     public function generateTags(string $content, array $options = []): array
     {
         $tags = $this->provider->generateTags($content, $options);
-        
+        $this->trackUsage('tag_generation', 0.01);
+
         // Filter and clean tags
-        return array_filter(array_map(function($tag) {
+        return array_filter(array_map(function ($tag) {
             return trim(strtolower($tag));
         }, $tags));
     }
@@ -297,13 +318,12 @@ class AIService
             }
 
             return $optimized;
-
         } catch (Exception $e) {
             Log::error('SEO Optimization Failed', [
                 'post_id' => $postData['id'] ?? 'new',
                 'error' => $e->getMessage()
             ]);
-            
+
             // Return original data if optimization fails
             return $postData;
         }
@@ -328,14 +348,15 @@ class AIService
             // Add AI-powered analysis
             if ($this->isSentimentAnalysisEnabled()) {
                 $analysis['sentiment'] = $this->analyzeSentiment($content);
+                $this->trackUsage('content_analysis', 0.02);
             }
 
             // Add readability analysis through content improvement
             $improvements = $this->improveContent($content, ['analysis_only' => true]);
             if (isset($improvements['readability_score'])) {
                 $analysis['readability'] = $improvements['readability_score'];
+                $this->trackUsage('content_analysis', 0.02);
             }
-
         } catch (Exception $e) {
             Log::warning('Content Analysis Partial Failure', [
                 'error' => $e->getMessage()
@@ -352,7 +373,110 @@ class AIService
      */
     public function getUsageStats(): array
     {
-        return $this->provider->getUsageStats();
+        $providerStats = $this->provider->getUsageStats();
+
+        // Add local usage tracking
+        $localStats = $this->getLocalUsageStats();
+
+        return array_merge($providerStats, $localStats);
+    }
+
+    /**
+     * Get local usage statistics from database.
+     *
+     * @return array
+     */
+    protected function getLocalUsageStats(): array
+    {
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return [
+                'total_requests' => 0,
+                'requests_today' => 0,
+                'requests_this_month' => 0,
+                'estimated_cost' => 0.00,
+                'credits_remaining' => 100.00,
+                'last_used' => null,
+                'usage_breakdown' => [],
+                'usage_percentage' => 0,
+                'status' => 'healthy'
+            ];
+        }
+
+        $cacheKey = 'ai_usage_stats_' . $userId;
+
+        return Cache::remember($cacheKey, 300, function () use ($userId) { // Cache for 5 minutes
+            $stats = AIUsage::getUserStats($userId);
+
+            return [
+                'total_requests' => $stats['month_requests'],
+                'requests_today' => $stats['today_requests'],
+                'requests_this_month' => $stats['month_requests'],
+                'estimated_cost' => $stats['total_cost'],
+                'credits_remaining' => AIUsage::getRemainingCredits($userId),
+                'last_used' => $stats['last_used'],
+                'usage_breakdown' => $stats['usage_breakdown'],
+                'usage_percentage' => AIUsage::getUsagePercentage($userId),
+                'status' => AIUsage::getUsageStatus($userId)
+            ];
+        });
+    }
+
+    /**
+     * Track AI usage for a specific operation.
+     *
+     * @param string $operation
+     * @param float $estimatedCost
+     * @param int $tokensUsed
+     * @param array $metadata
+     * @return void
+     */
+    protected function trackUsage(string $operation, float $estimatedCost = 0.01, int $tokensUsed = 0, array $metadata = []): void
+    {
+        $userId = auth()->id();
+
+        if (!$userId) {
+            // Skip tracking for guest users
+            return;
+        }
+
+        try {
+            AIUsage::create([
+                'user_id' => $userId,
+                'operation_type' => $operation,
+                'provider' => $this->config['default'] ?? 'openai',
+                'tokens_used' => $tokensUsed,
+                'cost' => $estimatedCost,
+                'status' => 'completed',
+                'metadata' => $metadata,
+            ]);
+
+            Log::info('AI Usage Tracked', [
+                'user_id' => $userId,
+                'operation' => $operation,
+                'cost' => $estimatedCost,
+                'tokens' => $tokensUsed
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to track AI usage', [
+                'user_id' => $userId,
+                'operation' => $operation,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Get remaining credits for the user.
+     *
+     * @return float
+     */
+    protected function getCreditsRemaining(): float
+    {
+        // This could be stored in database or retrieved from AI provider
+        // For now, return a default value
+        return 100.00; // $100 worth of credits
     }
 
     /**

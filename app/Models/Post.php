@@ -24,13 +24,28 @@ class Post extends Model
         'published_at',
         'meta_title',
         'meta_description',
-        'view_count',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
-        'view_count' => 'integer',
     ];
+
+    /**
+     * Mutator to ensure body content is properly formatted
+     */
+    public function setBodyAttribute($value)
+    {
+        // Clean up any potential issues with the HTML content
+        $this->attributes['body'] = $value;
+    }
+
+    /**
+     * Accessor to ensure body content is properly returned
+     */
+    public function getBodyAttribute($value)
+    {
+        return $value;
+    }
 
     /**
      * Scope a query to only include published posts.
@@ -38,7 +53,7 @@ class Post extends Model
     public function scopePublished(Builder $query): void
     {
         $query->where('status', 'published')
-              ->where('published_at', '<=', now());
+            ->where('published_at', '<=', now());
     }
 
     public function category()
@@ -69,16 +84,6 @@ class Post extends Model
         return $this->belongsToMany(Tag::class, 'post_tags');
     }
 
-    public function incrementViewCount()
-    {
-        $this->increment('view_count');
-    }
-
-    public function scopePopular($query, $days = 30)
-    {
-        return $query->where('created_at', '>=', now()->subDays($days))
-                    ->orderBy('view_count', 'desc');
-    }
 
     public function comments()
     {

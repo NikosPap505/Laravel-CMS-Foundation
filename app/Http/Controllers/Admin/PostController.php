@@ -30,15 +30,20 @@ class PostController extends Controller
         $validated['body'] = clean($validated['body']);
 
         $post = Post::create($validated);
-        
+
+        // Handle tags if provided
+        if ($request->has('tags') && !empty($request->tags)) {
+            $this->syncTags($post, $request->tags);
+        }
+
         // Fire event if the post was published immediately
         if ($post->status === 'published') {
             event(new PostPublished($post, false));
         }
-        
+
         // Clear cache when new post is created
         clear_cms_cache();
-        
+
         return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
     }
 
@@ -55,22 +60,53 @@ class PostController extends Controller
 
         $wasPublished = $post->status === 'published';
         $post->update($validated);
-        
+
+        // Handle tags if provided
+        if ($request->has('tags')) {
+            $this->syncTags($post, $request->tags);
+        }
+
         // Fire event if the post was just published (status changed to published)
         if (!$wasPublished && $post->status === 'published') {
             event(new PostPublished($post, false));
         }
-        
+
         // Clear cache when post is updated
         clear_cms_cache();
-        
+
         return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
+    }
+
+    /**
+     * Sync tags for a post
+     */
+    private function syncTags(Post $post, string $tagsString)
+    {
+        if (empty($tagsString)) {
+            $post->tags()->detach();
+            return;
+        }
+
+        $tagNames = array_map('trim', explode(',', $tagsString));
+        $tagIds = [];
+
+        foreach ($tagNames as $tagName) {
+            if (!empty($tagName)) {
+                $tag = \App\Models\Tag::firstOrCreate(
+                    ['name' => $tagName],
+                    ['slug' => \Illuminate\Support\Str::slug($tagName)]
+                );
+                $tagIds[] = $tag->id;
+            }
+        }
+
+        $post->tags()->sync($tagIds);
     }
 
     public function destroy(Post $post)
     {
         $post->delete();
-        
+
         // Clear cache when post is deleted
         clear_cms_cache();
 

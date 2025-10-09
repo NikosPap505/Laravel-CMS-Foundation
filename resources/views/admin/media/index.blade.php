@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Media Library')
+@section('subtitle', 'Manage your images, videos, and files')
 
 @section('content')
 <div class="py-12">

@@ -34,7 +34,31 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => value(function () {
+                $db = env('DB_DATABASE', database_path('database.sqlite'));
+
+                // In-memory database should pass through untouched
+                if ($db === ':memory:') {
+                    return $db;
+                }
+
+                // Treat absolute paths (Unix/Windows) and stream wrappers as already absolute
+                $isUnixAbsolute = \Illuminate\Support\Str::startsWith($db, ['/']);
+                // Detect Windows absolute path like C:\\ or C:/ without regex to avoid delimiter pitfalls
+                $isWindowsAbsolute = (strlen($db) > 1 && ctype_alpha($db[0]) && $db[1] === ':' && (isset($db[2]) && ($db[2] === '/' || $db[2] === '\\')));
+                $isStream = str_contains($db, '://');
+                if ($isUnixAbsolute || $isWindowsAbsolute || $isStream) {
+                    return $db;
+                }
+
+                // If the value starts with the project's database directory, resolve from base_path
+                if (\Illuminate\Support\Str::startsWith($db, ['database/', 'database\\'])) {
+                    return base_path($db);
+                }
+
+                // Otherwise, assume it's a filename relative to the database path
+                return database_path($db);
+            }),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'busy_timeout' => null,

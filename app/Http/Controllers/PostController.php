@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -14,8 +15,16 @@ class PostController extends Controller
 
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
-            // Use full-text search for better performance
-            $query->whereFullText(['title', 'excerpt', 'body'], $searchTerm);
+            // Use full-text search on MySQL/MariaDB; fallback to LIKE on SQLite
+            if (DB::getDriverName() === 'sqlite') {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('excerpt', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('body', 'like', '%' . $searchTerm . '%');
+                });
+            } else {
+                $query->whereFullText(['title', 'excerpt', 'body'], $searchTerm);
+            }
         }
 
         // Category filter

@@ -1,6 +1,6 @@
 # Laravel CMS Foundation
 
-A modern, enterprise-grade Content Management System built with Laravel 12, featuring AI-powered content generation, comprehensive integrations, stunning public website, and professional-grade security practices.
+A modern Content Management System built with Laravel 11, featuring AI-powered content generation, integrations, and a responsive website. This is a development-ready CMS with room for customization and improvement.
 
 ## ✨ What's New
 
@@ -68,10 +68,11 @@ A modern, enterprise-grade Content Management System built with Laravel 12, feat
 
 ## 📋 Requirements
 
--   PHP 8.2+
--   MySQL 5.7+ or MariaDB 10.3+
+-   PHP 8.3+ with intl extension
+-   SQLite (default) or MySQL 5.7+ / MariaDB 10.3+
 -   Composer
 -   Node.js & NPM (for frontend assets)
+-   **Important**: Install PHP intl extension: `sudo apt-get install php-intl`
 
 ## 🛠 Installation
 
@@ -108,16 +109,30 @@ A modern, enterprise-grade Content Management System built with Laravel 12, feat
     ```bash
     # Create your database and update .env with credentials
     php artisan migrate
-    php artisan db:seed
     ```
 
-6. **Create admin user**
+6. **Load demo data (one step)**
+
+    ```bash
+    php artisan demo:install
+    # Or also create an admin user (requires ADMIN_EMAIL and ADMIN_PASSWORD in .env)
+    php artisan demo:install --admin
+    ```
+
+    After this, visit <http://127.0.0.1:8000> to see the demo site.
+    php artisan db:seed
+
+    ```
+
+    ```
+
+7. **Create admin user**
 
     ```bash
     php artisan cms:assign-admin your-email@example.com
     ```
 
-7. **Build assets**
+8. **Build assets**
     ```bash
     npm run build
     ```
@@ -133,9 +148,12 @@ A modern, enterprise-grade Content Management System built with Laravel 12, feat
 2. **Update phpunit.xml with your test database credentials**
 
 3. **Run tests**
+
     ```bash
     php artisan test
     ```
+
+    **Note**: Some tests may fail if AI services are not configured. This is expected behavior.
 
 ## 🔐 Security Features
 
@@ -486,17 +504,16 @@ Visit the live demo to see all the modern features in action:
 
 ## 🏆 System Status
 
-### ⭐ **Overall Status: PRODUCTION READY - ENTERPRISE GRADE**
+### ⭐ **Overall Status: DEVELOPMENT READY**
 
-✅ **69 Tests Passing** (187 Assertions)  
-✅ **15 Major Features** Implemented  
-✅ **Zero Errors** or Warnings  
-✅ **Professional Architecture**  
-✅ **Security Hardened**  
-✅ **Performance Optimized**  
-✅ **SEO Ready**  
-✅ **AI-Powered**  
-✅ **Integration Ready**
+✅ **Database Migrations** Working  
+✅ **Basic CMS Features** Implemented  
+✅ **Admin Panel** Functional  
+✅ **Authentication** Working  
+✅ **Basic Testing** Framework  
+⚠️ **AI Features** Require API Configuration  
+⚠️ **Production Setup** Needs Review  
+⚠️ **PHP intl Extension** Required
 
 ### Industry Comparison
 

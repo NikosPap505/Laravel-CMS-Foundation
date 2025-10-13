@@ -10,11 +10,13 @@ use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\NewsletterController;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Admin\AIController;
 
 /*
@@ -25,6 +27,11 @@ use App\Http\Controllers\Admin\AIController;
 
 // Custom Home Page Route
 Route::get('/', function () {
+    // If the pages table is missing (fresh install), show a friendly install prompt
+    if (! Schema::hasTable('pages')) {
+        return view('install.migrate');
+    }
+
     $homePage = Page::where('slug', 'home')->first();
 
     // Get recent posts for the homepage
@@ -77,8 +84,58 @@ Route::middleware(['auth', 'verified'])
 
         Route::resource('users', UserController::class)->middleware('role:admin');
 
-        Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('role:admin');
-        Route::post('settings', [SettingController::class, 'store'])->name('settings.store')->middleware('role:admin');
+        // Settings Routes
+        Route::prefix('settings')->name('settings.')->middleware('role:admin')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+            Route::post('/', [SettingController::class, 'store'])->name('store'); // Legacy route
+
+            // General Settings
+            Route::get('/general', [SettingController::class, 'general'])->name('general');
+            Route::post('/general', [SettingController::class, 'storeGeneral'])->name('store.general');
+
+            // SEO Settings
+            Route::get('/seo', [SettingController::class, 'seo'])->name('seo');
+            Route::post('/seo', [SettingController::class, 'storeSeo'])->name('store.seo');
+
+            // Email Settings
+            Route::get('/email', [SettingController::class, 'email'])->name('email');
+            Route::post('/email', [SettingController::class, 'storeEmail'])->name('store.email');
+
+            // Footer Settings
+            Route::get('/footer', [SettingController::class, 'footer'])->name('footer');
+            Route::post('/footer', [SettingController::class, 'storeFooter'])->name('store.footer');
+
+            // Theme Settings
+            Route::get('/theme', [SettingController::class, 'theme'])->name('theme');
+            Route::post('/theme', [SettingController::class, 'storeTheme'])->name('store.theme');
+
+            // Content Settings
+            Route::get('/content', [SettingController::class, 'content'])->name('content');
+            Route::post('/content', [SettingController::class, 'storeContent'])->name('store.content');
+
+            // AI Settings
+            Route::get('/ai', [SettingController::class, 'ai'])->name('ai');
+            Route::post('/ai', [SettingController::class, 'storeAi'])->name('store.ai');
+
+            // Integration Settings
+            Route::get('/integrations', [SettingController::class, 'integrations'])->name('integrations');
+            Route::post('/integrations', [SettingController::class, 'storeIntegrations'])->name('store.integrations');
+
+            // Security Settings
+            Route::get('/security', [SettingController::class, 'security'])->name('security');
+            Route::post('/security', [SettingController::class, 'storeSecurity'])->name('store.security');
+
+            // Backup & Cache Settings
+            Route::get('/backup', [SettingController::class, 'backup'])->name('backup');
+            Route::post('/backup', [SettingController::class, 'storeBackup'])->name('store.backup');
+
+            // Quick Actions
+            Route::post('/clear-cache', [SettingController::class, 'clearCache'])->middleware('throttle:5,1')->name('clear-cache');
+            Route::post('/optimize-database', [SettingController::class, 'optimizeDatabase'])->middleware('throttle:5,1')->name('optimize-database');
+        });
+
+        Route::get('footer', [FooterController::class, 'index'])->name('footer.index');
+        Route::post('footer', [FooterController::class, 'store'])->name('footer.store');
 
         // API routes (with rate limiting)
         Route::get('/api/media', [\App\Http\Controllers\Admin\MediaController::class, 'apiIndex'])
@@ -114,7 +171,6 @@ Route::middleware(['auth', 'verified'])
             Route::post('/analyze-content', [AIController::class, 'analyzeContent'])->name('analyze-content');
             Route::post('/generate-social-post', [AIController::class, 'generateSocialPost'])->name('generate-social-post');
             Route::get('/status', [AIController::class, 'status'])->name('status');
-            Route::get('/usage', [AIController::class, 'usage'])->name('usage');
             Route::get('/analytics', [AIController::class, 'analytics'])->name('analytics');
             Route::get('/analytics/data', [AIController::class, 'getAnalytics'])->name('analytics.data');
             Route::post('/track-acceptance', [AIController::class, 'trackAcceptance'])->name('track-acceptance');
@@ -123,18 +179,20 @@ Route::middleware(['auth', 'verified'])
         });
     });
 
-// Test route for AI usage widget
-Route::get('/test-ai-widget', function () {
-    return view('test-ai-widget');
-})->name('test-ai-widget');
+// Local-only test routes
+if (app()->isLocal()) {
+    // Test route for AI usage widget
+    Route::get('/test-ai-widget', function () {
+        return view('test-ai-widget');
+    })->name('test-ai-widget');
 
-
-// Test route for Integration Hub
-Route::get('/test-integration-hub', function () {
-    $integrationManager = app(\App\Services\Integration\IntegrationManager::class);
-    $data = $integrationManager->getDashboardData();
-    return view('admin.integrations.index', compact('data'));
-})->name('test-integration-hub');
+    // Test route for Integration Hub
+    Route::get('/test-integration-hub', function () {
+        $integrationManager = app(\App\Services\Integration\IntegrationManager::class);
+        $data = $integrationManager->getDashboardData();
+        return view('admin.integrations.index', compact('data'));
+    })->name('test-integration-hub');
+}
 
 // Profile routes
 Route::middleware('auth')->group(function () {
@@ -147,12 +205,18 @@ Route::middleware('auth')->group(function () {
 
 // Custom "About Us" page route
 Route::get('/about-us', function () {
+    if (! Schema::hasTable('pages')) {
+        return view('install.migrate');
+    }
     $page = Page::where('slug', 'about-us')->firstOrFail();
     return view('about', ['page' => $page]);
 })->name('about');
 
 // Custom "Services" page route
 Route::get('/services', function () {
+    if (! Schema::hasTable('pages')) {
+        return view('install.migrate');
+    }
     $page = Page::where('slug', 'services')->firstOrFail();
     return view('services', ['page' => $page]);
 })->name('services');

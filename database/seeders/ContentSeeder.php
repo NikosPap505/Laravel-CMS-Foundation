@@ -62,28 +62,36 @@ class ContentSeeder extends Seeder
             'meta_description' => 'Explore our wide range of digital marketing services, including SEO, Web Design, and Social Media Marketing.',
         ]);
 
-        // Posts
-        Post::create([
-            'title' => '5 Tips to Improve Your Google Ranking in 2025',
-            'slug' => '5-tips-google-ranking-2025',
-            'category_id' => $category2->id,
-            'featured_image_id' => null,
-            'excerpt' => 'SEO is constantly evolving. In this article, we explore five actionable tips that can help you climb the search engine rankings and attract more organic traffic this year.',
-            'body' => '<h3>1. Focus on User Experience (UX)</h3><p>Google\'s algorithm increasingly prioritizes websites that offer a great user experience. This means fast loading times, easy navigation, and mobile-friendliness are no longer optional.</p><h3>2. Create High-Quality, Relevant Content</h3><p>Content is still king. Your goal should be to create the best, most comprehensive answer to your user\'s query. Use headings, lists, and images to make your content engaging and easy to read.</p><p><strong>Remember:</strong> Quality over quantity!</p>',
-            'meta_title' => '5 Actionable Tips for Better Google Rankings in 2025',
-            'meta_description' => 'Discover 5 proven SEO tips, including focusing on user experience and creating quality content, to improve your website\'s ranking on Google.',
-        ]);
+        // Posts - Only create if they don't already exist (DemoDataSeeder creates them)
+        if (!Post::where('slug', '5-tips-google-ranking-2025')->exists()) {
+            Post::create([
+                'title' => '5 Tips to Improve Your Google Ranking in 2025',
+                'slug' => '5-tips-google-ranking-2025',
+                'category_id' => $category2->id,
+                'featured_image_id' => null,
+                'excerpt' => 'SEO is constantly evolving. In this article, we explore five actionable tips that can help you climb the search engine rankings and attract more organic traffic this year.',
+                'body' => '<h3>1. Focus on User Experience (UX)</h3><p>Google\'s algorithm increasingly prioritizes websites that offer a great user experience. This means fast loading times, easy navigation, and mobile-friendliness are no longer optional.</p><h3>2. Create High-Quality, Relevant Content</h3><p>Content is still king. Your goal should be to create the best, most comprehensive answer to your user\'s query. Use headings, lists, and images to make your content engaging and easy to read.</p><p><strong>Remember:</strong> Quality over quantity!</p>',
+                'meta_title' => '5 Actionable Tips for Better Google Rankings in 2025',
+                'meta_description' => 'Discover 5 proven SEO tips, including focusing on user experience and creating quality content, to improve your website\'s ranking on Google.',
+                'status' => 'published',
+                'published_at' => now()->subDays(1),
+            ]);
+        }
 
-        Post::create([
-            'title' => 'The Ultimate Guide to Social Media Strategy',
-            'slug' => 'ultimate-guide-social-media-strategy',
-            'category_id' => $category1->id,
-            'featured_image_id' => null,
-            'excerpt' => 'A successful social media presence doesn\'t happen by accident. It requires a well-thought-out strategy. This guide will walk you through the essential steps.',
-            'body' => '<h2>Define Your Goals</h2><p>What do you want to achieve with social media? Brand awareness, lead generation, or customer support? Your goals will define your strategy.</p><h2>Know Your Audience</h2><p>Which platforms do your ideal customers use? What kind of content do they engage with? Research is key to connecting with the right people.</p>',
-            'meta_title' => 'The Ultimate Guide to Creating a Social Media Strategy',
-            'meta_description' => 'Learn how to build a successful social media strategy from scratch. Define your goals, understand your audience, and create engaging content.',
-        ]);
+        if (!Post::where('slug', 'ultimate-guide-social-media-strategy')->exists()) {
+            Post::create([
+                'title' => 'The Ultimate Guide to Social Media Strategy',
+                'slug' => 'ultimate-guide-social-media-strategy',
+                'category_id' => $category1->id,
+                'featured_image_id' => null,
+                'excerpt' => 'A successful social media presence doesn\'t happen by accident. It requires a well-thought-out strategy. This guide will walk you through the essential steps.',
+                'body' => '<h2>Define Your Goals</h2><p>What do you want to achieve with social media? Brand awareness, lead generation, or customer support? Your goals will define your strategy.</p><h2>Know Your Audience</h2><p>Which platforms do your ideal customers use? What kind of content do they engage with? Research is key to connecting with the right people.</p>',
+                'meta_title' => 'The Ultimate Guide to Creating a Social Media Strategy',
+                'meta_description' => 'Learn how to build a successful social media strategy from scratch. Define your goals, understand your audience, and create engaging content.',
+                'status' => 'published',
+                'published_at' => now()->subDays(2),
+            ]);
+        }
 
         // Menu Items
         MenuItem::create(['name' => 'Home', 'link' => '/', 'order' => 1]);

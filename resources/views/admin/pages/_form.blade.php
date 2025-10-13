@@ -44,10 +44,10 @@
 <script>
     tinymce.init({
         selector: 'textarea#content-editor',
-        plugins: 'code table lists image link media',
-        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table | image link | media',
-        skin: 'oxide-dark',
-        content_css: 'dark',
+        plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        height: 400,
+        branding: true,
 
         // ✅ START: IMAGE UPLOAD CONFIGURATION
         image_title: true,

@@ -152,12 +152,61 @@ return new class extends Migration
      */
     private function indexExists(string $table, string $index): bool
     {
-        $indexes = DB::select("SHOW INDEX FROM {$table}");
-        foreach ($indexes as $idx) {
-            if ($idx->Key_name === $index) {
-                return true;
+        $driver = DB::getDriverName();
+
+        try {
+            if (in_array($driver, ['mysql', 'mariadb'])) {
+                $indexes = DB::select("SHOW INDEX FROM `{$table}`");
+                foreach ($indexes as $idx) {
+                    if (isset($idx->Key_name) && $idx->Key_name === $index) {
+                        return true;
+                    }
+                }
+                return false;
             }
+
+            if ($driver === 'sqlite') {
+                // PRAGMA index_list returns rows with columns: seq, name, unique, origin, partial
+                $indexes = DB::select("PRAGMA index_list('" . str_replace("'", "''", $table) . "')");
+                foreach ($indexes as $idx) {
+                    if (isset($idx->name) && $idx->name === $index) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            if ($driver === 'pgsql') {
+                $indexes = DB::select(
+                    "SELECT indexname FROM pg_indexes WHERE schemaname = ANY (current_schemas(false)) AND tablename = ?",
+                    [$table]
+                );
+                foreach ($indexes as $idx) {
+                    if (isset($idx->indexname) && $idx->indexname === $index) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            if ($driver === 'sqlsrv') {
+                $indexes = DB::select(
+                    "SELECT i.name AS indexname FROM sys.indexes i INNER JOIN sys.tables t ON i.object_id = t.object_id WHERE t.name = ?",
+                    [$table]
+                );
+                foreach ($indexes as $idx) {
+                    if (isset($idx->indexname) && $idx->indexname === $index) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } catch (\Throwable $e) {
+            // If the adapter-specific inspection fails, assume index doesn't exist
+            return false;
         }
+
+        // Unknown driver: assume index does not exist
         return false;
     }
 };

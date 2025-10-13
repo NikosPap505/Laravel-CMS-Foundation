@@ -176,27 +176,17 @@
 
 @push('scripts')
 <script>
-    // TinyMCE Initialization with Enhanced Configuration
+    // TinyMCE Initialization with Basic Configuration
     tinymce.init({
         selector: 'textarea#content-editor',
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-            'textcolor', 'colorpicker', 'textpattern', 'nonbreaking', 'pagebreak',
-            'save', 'directionality', 'paste', 'pastefromword', 'template'
-        ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl',
-        menubar: 'file edit view insert format tools table help',
-        toolbar_sticky: true,
+        plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         height: 600,
-        branding: false,
+        branding: true,
         promotion: false,
         statusbar: true,
         resize: true,
         elementpath: true,
-        skin: 'oxide-dark',
-        content_css: 'dark',
         content_style: `
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;

@@ -91,9 +91,13 @@
                     
                     <div class="text-text-secondary mb-3">
                         <strong>Post:</strong> 
-                        <a href="{{ route('blog.show', $comment->post) }}" class="text-accent hover:underline" target="_blank">
-                            {{ $comment->post->title }}
-                        </a>
+                        @if($comment->post)
+                            <a href="{{ route('blog.show', $comment->post) }}" class="text-accent hover:underline" target="_blank">
+                                {{ $comment->post->title }}
+                            </a>
+                        @else
+                            <span class="text-red-500 italic">Post not found or deleted</span>
+                        @endif
                     </div>
                     
                     <div class="bg-background border border-border rounded-md p-3 mb-3">

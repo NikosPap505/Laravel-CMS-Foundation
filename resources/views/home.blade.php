@@ -9,12 +9,12 @@
         <div class="absolute inset-0 bg-gradient-to-br from-background via-surface to-background">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f3f4f6" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
         </div>
-        
+
         <!-- Floating Elements -->
         <div class="absolute top-20 left-10 w-20 h-20 bg-accent/10 rounded-full animate-pulse"></div>
         <div class="absolute top-40 right-20 w-16 h-16 bg-accent/20 rounded-full animate-bounce"></div>
         <div class="absolute bottom-20 left-20 w-12 h-12 bg-accent/15 rounded-full animate-pulse"></div>
-        
+
         <!-- Main Content -->
         <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
             <!-- Badge -->
@@ -24,23 +24,23 @@
                 </svg>
                 Professional CMS Solutions Provider
             </div>
-            
+
             <!-- Main Heading -->
             <h1 class="text-5xl md:text-7xl font-bold text-text-primary mb-6 leading-tight animate-slide-up">
-                Build Amazing Websites with Our 
+                Build Amazing Websites with Our
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/70 animate-gradient">
                     Professional CMS
                 </span>
             </h1>
-            
+
             <!-- Subtitle -->
             <p class="text-xl md:text-2xl text-text-secondary max-w-4xl mx-auto mb-12 leading-relaxed animate-slide-up-delay">
-                Experience the power of enterprise-grade content management. Our Laravel-based CMS delivers 
-                <span class="text-accent font-semibold">blazing-fast performance</span>, 
-                <span class="text-accent font-semibold">bulletproof security</span>, and 
+                Experience the power of enterprise-grade content management. Our Laravel-based CMS delivers
+                <span class="text-accent font-semibold">blazing-fast performance</span>,
+                <span class="text-accent font-semibold">bulletproof security</span>, and
                 <span class="text-accent font-semibold">intuitive design</span>.
             </p>
-            
+
             <!-- CTA Buttons -->
             <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 animate-slide-up-delay-2">
                 <a href="{{ url('/features') }}" class="group relative px-8 py-4 bg-accent text-white rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-accent/90 hover:scale-105 hover:shadow-2xl">
@@ -56,7 +56,7 @@
                     </span>
                 </a>
             </div>
-            
+
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 animate-fade-in-delay">
                 <div class="text-center">
@@ -64,7 +64,7 @@
                     <div class="text-text-secondary">Published Posts</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold text-accent mb-2 counter" data-target="{{ \App\Models\Comment::where('status', 'approved')->count() }}">0</div>
+                    <div class="text-3xl md:text-4xl font-bold text-accent mb-2 counter" data-target="{{ \Illuminate\Support\Facades\Schema::hasTable('comments') ? \App\Models\Comment::where('status', 'approved')->count() : 0 }}">0</div>
                     <div class="text-text-secondary">Active Comments</div>
                 </div>
                 <div class="text-center">
@@ -77,7 +77,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Scroll Indicator -->
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
             <svg class="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,14 +98,14 @@
                     Powerful Features
                 </div>
                 <h2 class="text-4xl md:text-6xl font-bold text-text-primary mb-6">
-                    Everything You Need to 
+                    Everything You Need to
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/70">Succeed</span>
                 </h2>
                 <p class="text-xl text-text-secondary max-w-3xl mx-auto">
                     Our CMS is packed with enterprise-grade features that make content management effortless and powerful.
                 </p>
             </div>
-            
+
             <!-- Interactive Feature Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Feature 1 -->
@@ -131,7 +131,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Feature 2 -->
                 <div class="group feature-card bg-surface/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                     <div class="relative mb-6">
@@ -155,7 +155,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Feature 3 -->
                 <div class="group feature-card bg-surface/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                     <div class="relative mb-6">
@@ -179,7 +179,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Feature 4 -->
                 <div class="group feature-card bg-surface/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                     <div class="relative mb-6">
@@ -203,7 +203,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Feature 5 -->
                 <div class="group feature-card bg-surface/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                     <div class="relative mb-6">
@@ -227,7 +227,7 @@
                         </svg>
                     </div>
                 </div>
-                
+
                 <!-- Feature 6 -->
                 <div class="group feature-card bg-surface/50 backdrop-blur-sm p-8 rounded-2xl border border-border/50 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                     <div class="relative mb-6">
@@ -267,14 +267,14 @@
                     Transformation Results
                 </div>
                 <h2 class="text-4xl md:text-6xl font-bold text-text-primary mb-6">
-                    See the 
+                    See the
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/70">Difference</span>
                 </h2>
                 <p class="text-xl text-text-secondary max-w-3xl mx-auto">
                     Discover how our CMS transforms your content management from chaotic to professional.
                 </p>
             </div>
-            
+
             <!-- Comparison Cards -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
                 <!-- Before -->
@@ -324,7 +324,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- After -->
                 <div class="group">
                     <div class="bg-surface/50 backdrop-blur-sm border border-accent/30 rounded-2xl p-8 relative overflow-hidden shadow-lg">
@@ -383,7 +383,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Benefits Summary -->
             <div class="bg-surface/50 backdrop-blur-sm rounded-2xl border border-border/50 p-8 text-center">
                 <h3 class="text-2xl font-bold text-text-primary mb-4">The Transformation Impact</h3>
@@ -417,49 +417,49 @@
                     Latest Content
                 </div>
                 <h2 class="text-4xl md:text-6xl font-bold text-text-primary mb-6">
-                    From Our 
+                    From Our
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/70">Blog</span>
                 </h2>
                 <p class="text-xl text-text-secondary max-w-3xl mx-auto">
                     Discover insights, tutorials, and industry trends powered by our CMS.
                 </p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse ($posts as $post)
                     <article class="group bg-surface/50 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden transition-all duration-500 hover:border-accent/30 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2">
                         @if($post->featuredImage)
                             <a href="{{ route('blog.show', $post) }}" class="block">
                                 <div class="relative overflow-hidden">
-                                    <img src="{{ Storage::url($post->featuredImage->path) }}" 
-                                         alt="{{ $post->featuredImage->alt_text ?? $post->title }}" 
+                                    <img src="{{ Storage::url($post->featuredImage->path) }}"
+                                         alt="{{ $post->featuredImage->alt_text ?? $post->title }}"
                                          class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
                             </a>
                         @endif
-                        
+
                         <div class="p-8">
                             <!-- Category Badge -->
                             <div class="mb-4">
-                                <a href="{{ route('blog.category', $post->category) }}" 
+                                <a href="{{ route('blog.category', $post->category) }}"
                                    class="inline-block bg-accent/10 text-accent text-sm font-semibold px-3 py-1 rounded-full hover:bg-accent/20 transition-colors duration-300">
                                     {{ $post->category->name }}
                                 </a>
                             </div>
-                            
+
                             <!-- Title -->
                             <h2 class="text-2xl font-bold text-text-primary mb-4 group-hover:text-accent transition-colors duration-300">
                                 <a href="{{ route('blog.show', $post) }}" class="hover:text-accent transition-colors">
                                     {{ $post->title }}
                                 </a>
                             </h2>
-                            
+
                             <!-- Excerpt -->
                             <p class="text-text-secondary mb-6 leading-relaxed">
                                 {{ Str::limit($post->excerpt, 120) }}
                             </p>
-                            
+
                             <!-- Meta Info -->
                             <div class="flex items-center justify-between text-sm text-text-secondary">
                                 <div class="flex items-center space-x-4">
@@ -494,7 +494,7 @@
                     </div>
                 @endforelse
             </div>
-            
+
             <!-- CTA -->
             <div class="text-center mt-16">
                 <a href="{{ route('blog.index') }}" class="group relative inline-flex items-center px-8 py-4 bg-accent text-white rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-accent/90 hover:scale-105 hover:shadow-2xl">
@@ -512,7 +512,7 @@
             <div class="absolute top-10 left-10 w-32 h-32 bg-accent/10 rounded-full animate-pulse"></div>
             <div class="absolute bottom-10 right-10 w-24 h-24 bg-accent/15 rounded-full animate-bounce"></div>
             <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-accent/20 rounded-full animate-pulse"></div>
-            
+
             <div class="relative z-10 max-w-4xl mx-auto">
                 <!-- Badge -->
                 <div class="inline-flex items-center px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-8">
@@ -521,19 +521,19 @@
                     </svg>
                     Ready to Transform Your Website?
                 </div>
-                
+
                 <!-- Heading -->
                 <h2 class="text-4xl md:text-6xl font-bold text-text-primary mb-8">
-                    Let's Build Something 
+                    Let's Build Something
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/70">Amazing</span>
                 </h2>
-                
+
                 <!-- Description -->
                 <p class="text-xl text-text-secondary mb-12 max-w-3xl mx-auto leading-relaxed">
-                    Join thousands of businesses who have transformed their online presence with our professional CMS. 
+                    Join thousands of businesses who have transformed their online presence with our professional CMS.
                     Get started today and experience the difference.
                 </p>
-                
+
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
                     <a href="{{ url('/contact') }}" class="group relative px-8 py-4 bg-accent text-white rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-accent/90 hover:scale-105 hover:shadow-2xl">
@@ -549,7 +549,7 @@
                         </span>
                     </a>
                 </div>
-                
+
                 <!-- Trust Indicators -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
                     <div class="text-center">
@@ -573,18 +573,18 @@
 <script>
     // Counter Animation - runs only once per page load
     let countersAnimated = false;
-    
+
     function animateCounters() {
         if (countersAnimated) return; // Prevent multiple animations
-        
+
         const counters = document.querySelectorAll('.counter');
-        
+
         counters.forEach(counter => {
             const target = parseInt(counter.getAttribute('data-target'));
             const duration = 2000; // 2 seconds
             const increment = target / (duration / 16); // 60fps
             let current = 0;
-            
+
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
@@ -594,16 +594,16 @@
                 counter.textContent = Math.floor(current);
             }, 16);
         });
-        
+
         countersAnimated = true; // Mark as animated
     }
-    
+
     // Intersection Observer for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-fade-in');
-                
+
                 // Animate counters when they come into view (only once)
                 if (entry.target.classList.contains('counter') && !countersAnimated) {
                     animateCounters();
@@ -614,7 +614,7 @@
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     });
-    
+
     // Separate observer for counters to ensure they only animate once
     const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -626,16 +626,16 @@
     }, {
         threshold: 0.5
     });
-    
+
     // Observe elements for animation
     document.addEventListener('DOMContentLoaded', () => {
         const elementsToAnimate = document.querySelectorAll('.feature-card, .demo-card, [class*="animate-"]');
         elementsToAnimate.forEach(el => observer.observe(el));
-        
+
         // Observe counters separately to ensure one-time animation
         const counters = document.querySelectorAll('.counter');
         counters.forEach(counter => counterObserver.observe(counter));
-        
+
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

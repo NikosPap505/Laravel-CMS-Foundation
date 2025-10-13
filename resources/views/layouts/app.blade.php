@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
         <!-- TinyMCE -->
-        <script src="https://cdn.tiny.cloud/1/f8n0l9nzwigjdcwl2jmcyxwlevc051jlfzuea95mm8wgk35v/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

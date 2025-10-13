@@ -1,5 +1,5 @@
 <div>
-    <script src="https://cdn.tiny.cloud/1/f8n0l9nzwigjdcwl2jmcyxwlevc051jlfzuea95mm8wgk35v/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/{{ config('services.tinymce.api_key', 'your-api-key-here') }}/tinymce/8/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   tinymce.init({
     selector: 'textarea#myeditorinstance', // Replace this CSS selector to match the placeholder element for TinyMCE

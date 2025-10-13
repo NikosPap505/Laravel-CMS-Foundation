@@ -19,7 +19,7 @@
     @vite(['resources/css/app.css', 'resources/css/themes.css', 'resources/js/app.js'])
     
     <!-- TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/f8n0l9nzwigjdcwl2jmcyxwlevc051jlfzuea95mm8wgk35v/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     
     <!-- SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -107,6 +107,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
                         Menu Items
+                    </a>
+                    
+                    <a href="{{ route('admin.footer.index') }}" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors duration-300"
+                       :class="currentRoute.startsWith('admin.footer') ? 'text-white bg-blue-600' : (theme === 'dark' ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100')">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                        Footer Content
                     </a>
                 </div>
                 
